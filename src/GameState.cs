@@ -36,5 +36,15 @@ namespace Tetris
 
             return ToReturn;
         }
+
+        public void Drop(Piece p, int shift)
+        {
+            if (shift < 0 || shift > 3)
+            {
+                throw new Exception("Shift must be between 0 and 3.");
+            }
+
+            
+        }
     }
 }

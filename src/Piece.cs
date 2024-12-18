@@ -23,6 +23,7 @@ namespace Tetris
                 }
             }
 
+            //First, look for bad patterns
             //Ensure it is not one of these: https://i.imgur.com/YE4VKdc.png
             if (ToReturn.Squares[0,0] == false && ToReturn.Squares[1,0] == true && ToReturn.Squares[0,1] == true && ToReturn.Squares[1,1] == false)
             {
@@ -46,32 +47,33 @@ namespace Tetris
                     ToReturn.Squares[0,1] = true;
                 }
             }
-            else if (ToReturn.Squares[0,0] == false && ToReturn.Squares[1,0] == false && ToReturn.Squares[0,1] == false && ToReturn.Squares[1,1] == false) //Ensure at least one is there
+
+            //If there is only one, put it in top left
+            int NumberOccupied = 0;
+            for (int r = 0; r < 2; r++)
             {
-                if (OddsOf(0.5f))
+                for (int c = 0; c < 2; c++)
                 {
-                    if (OddsOf(0.5f))
+                    if (ToReturn.Squares[r,c])
                     {
-                        ToReturn.Squares[0,0] = true;
-                    }
-                    else
-                    {
-                        ToReturn.Squares[1,0] = true;
-                    }
-                }
-                else
-                {
-                    if (OddsOf(0.5f))
-                    {
-                        ToReturn.Squares[0,1] = true;
-                    }
-                    else
-                    {
-                        ToReturn.Squares[1,1] = true;
+                        NumberOccupied = NumberOccupied + 1;
                     }
                 }
             }
-            else if (ToReturn.Squares[0,0] == false && ToReturn.Squares[1,0] == false && ToReturn.Squares[0,1] == false && ToReturn.Squares[1,1] == false) //Ensure it is not all of them
+
+            //Handle different scenarios
+            if (NumberOccupied == 0) //There are none
+            {
+                ToReturn.Squares[0,0] = true; //put one on
+            }
+            if (NumberOccupied == 1) //If there is only one, ensure it is the top one
+            {
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = false;
+                ToReturn.Squares[0,1] = false;
+                ToReturn.Squares[1,1] = false;
+            }
+            else if (NumberOccupied == 4) //If all are on, turn one random one off
             {
                 if (OddsOf(0.5f))
                 {
