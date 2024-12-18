@@ -40,13 +40,46 @@ class PlayedGame:
         self.final_score:int = 0 # the final score of the game after it was over
 
 def simulate_game(tai:TetrisAI) -> PlayedGame:
-    gs:tetris.GameState = tetris.GameState()
+    ToReturn = PlayedGame()
 
+    # simulate the game
+    gs:tetris.GameState = tetris.GameState()
     while True:
 
         # generate random piece
         p:tetris.Piece = tetris.Piece()
         p.randomize()
 
+        # create the input representation
+        inputs:list[int] = representation.StateInputs(p, gs)
+
         # ask the NN to play the next game
         shift:int = tai.choose_move(p, gs)
+
+        # create the output representation
+        outputs:list[int] = [0,0,0,0]
+        outputs[shift] = 1
+
+        # log the input/output pair
+        ToReturn.states.append(inputs)
+        ToReturn.decisions.append(outputs)
+
+        # make the move
+        try:
+            gs.drop(p)
+        except tetris.InvalidShiftException as ex:
+            print("Invalid move attempted. Considering game lost.")
+
+            # mark down the final score as 0
+            ToReturn.final_score = 0
+
+            # return
+            return ToReturn
+        except Exception as ex:
+            print("Unhandled exception in move execution: " + str(ex))
+            input("Waiting for next enter from you.")
+
+        # if the game is over, finish
+        if gs.over():
+            ToReturn.final_score = gs.score() # mark down final score
+            return ToReturn
