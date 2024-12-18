@@ -30,7 +30,6 @@ class TetrisAI:
         outputs = self.model.predict(ninputs, verbose=False)
         
         vals:list[float] = outputs[0]
-        print(vals)
         return int(numpy.argmax(vals))
 
 class PlayedGame:
@@ -66,10 +65,9 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
 
         # make the move
         try:
-            gs.drop(p)
+            gs.drop(p, shift)
         except tetris.InvalidShiftException as ex:
-            print("Invalid move attempted. Considering game lost.")
-
+            
             # mark down the final score as 0
             ToReturn.final_score = 0
 
@@ -83,3 +81,10 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         if gs.over():
             ToReturn.final_score = gs.score() # mark down final score
             return ToReturn
+
+tai = TetrisAI()        
+GameSimulations:list[PlayedGame] = []
+for x in range(0, 100):
+    print("Simulating game # " + str(x))
+    pg = simulate_game(tai)
+    GameSimulations.append(pg)
