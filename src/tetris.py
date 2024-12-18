@@ -97,7 +97,7 @@ class GameState:
 
         # firstly, if they are trying to shift THREE spaces, ensure none of the second column is occupied. That is the only way that a shift of three is even possible (can't "extend" column B beyond the limits of the board)
         if shift == 3 and (p.squares[0][1] or p.squares[1][1]):
-            raise Exception("Cannot shift piece 3 units to the right because the piece has column B occupied.")
+            raise InvalidShiftException("Cannot shift piece 3 units to the right because the piece has column B occupied.")
 
         # record the depth of every column
         column_depths:list[int] = [0,0,0,0]
@@ -125,7 +125,7 @@ class GameState:
 
         # if drop depth is 0, that means there is just NO MORE ROOM!
         if drop_depth == 0:
-            raise InvalidShiftException("Unable to drop piece because there is no more room left to accomodate the piece!")
+            raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
 
         # drop by "copying in" the values
         # note that we are only "copying" over the TRUE values. We do not want to CLEAR a square on the board if the square of the piece is not occupied... that may cause an accidental clearing of a square on the board.
