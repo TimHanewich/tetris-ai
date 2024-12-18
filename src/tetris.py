@@ -65,6 +65,11 @@ class Piece:
             return 1
         else:
             return 0
+        
+class InvalidShiftException(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
 
 class GameState:
     def __init__(self):
@@ -120,7 +125,7 @@ class GameState:
 
         # if drop depth is 0, that means there is just NO MORE ROOM!
         if drop_depth == 0:
-            raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
+            raise InvalidShiftException("Unable to drop piece because there is no more room left to accomodate the piece!")
 
         # drop by "copying in" the values
         # note that we are only "copying" over the TRUE values. We do not want to CLEAR a square on the board if the square of the piece is not occupied... that may cause an accidental clearing of a square on the board.
