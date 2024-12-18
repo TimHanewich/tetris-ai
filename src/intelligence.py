@@ -33,9 +33,20 @@ class TetrisAI:
         print(vals)
         return int(numpy.argmax(vals))
 
-tai = TetrisAI()
-gs = tetris.GameState()
-p = tetris.Piece()
-p.randomize()
+class PlayedGame:
+    def __init__(self):
+        self.states:list[int] = [] # a list of all states evaluated
+        self.decisions:list[int] = [] # a list of all decisions made
+        self.final_score:int = 0 # the final score of the game after it was over
 
-v = tai.choose_move(p, gs)
+def simulate_game(tai:TetrisAI) -> PlayedGame:
+    gs:tetris.GameState = tetris.GameState()
+
+    while True:
+
+        # generate random piece
+        p:tetris.Piece = tetris.Piece()
+        p.randomize()
+
+        # ask the NN to play the next game
+        shift:int = tai.choose_move(p, gs)
