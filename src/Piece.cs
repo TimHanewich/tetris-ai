@@ -15,88 +15,57 @@ namespace Tetris
         {
             //Construct random
             Piece ToReturn = new Piece();
-            for (int r = 0; r < 2; r++)
-            {
-                for (int c = 0; c < 2; c++)
-                {
-                    ToReturn.Squares[r,c] = OddsOf(0.5f);
-                }
-            }
+            Random r = new Random();
+            int selection = r.Next(0, 7); //Pick at random: 0,1,2,3,4,5,6
 
-            //First, look for bad patterns
-            //Ensure it is not one of these: https://i.imgur.com/YE4VKdc.png
-            if (ToReturn.Squares[0,0] == false && ToReturn.Squares[1,0] == true && ToReturn.Squares[0,1] == true && ToReturn.Squares[1,1] == false)
-            {
-                if (OddsOf(0.5f))
-                {
-                    ToReturn.Squares[0,0] = true;
-                }
-                else
-                {
-                    ToReturn.Squares[1,1] = true;
-                }
-            }
-            else if (ToReturn.Squares[0,0] == true && ToReturn.Squares[1,0] == false && ToReturn.Squares[0,1] == false && ToReturn.Squares[1,1] == true) //Ensure it is not one of these: https://i.imgur.com/YE4VKdc.png
-            {
-                if (OddsOf(0.5f))
-                {
-                    ToReturn.Squares[1,0] = true;
-                }
-                else
-                {
-                    ToReturn.Squares[0,1] = true;
-                }
-            }
-
-            //If there is only one, put it in top left
-            int NumberOccupied = 0;
-            for (int r = 0; r < 2; r++)
-            {
-                for (int c = 0; c < 2; c++)
-                {
-                    if (ToReturn.Squares[r,c])
-                    {
-                        NumberOccupied = NumberOccupied + 1;
-                    }
-                }
-            }
-
-            //Handle different scenarios
-            if (NumberOccupied == 0) //There are none
-            {
-                ToReturn.Squares[0,0] = true; //put one on
-            }
-            if (NumberOccupied == 1) //If there is only one, ensure it is the top one
+            if (selection == 0)
             {
                 ToReturn.Squares[0,0] = true;
                 ToReturn.Squares[1,0] = false;
                 ToReturn.Squares[0,1] = false;
                 ToReturn.Squares[1,1] = false;
             }
-            else if (NumberOccupied == 4) //If all are on, turn one random one off
+            else if (selection == 1)
             {
-                if (OddsOf(0.5f))
-                {
-                    if (OddsOf(0.5f))
-                    {
-                        ToReturn.Squares[0,0] = false;
-                    }
-                    else
-                    {
-                        ToReturn.Squares[1,0] = false;
-                    }
-                }
-                else
-                {
-                    if (OddsOf(0.5f))
-                    {
-                        ToReturn.Squares[0,1] = false;
-                    }
-                    else
-                    {
-                        ToReturn.Squares[1,1] = false;
-                    }
-                }
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = false;
+                ToReturn.Squares[0,1] = true;
+                ToReturn.Squares[1,1] = false;
+            }
+            else if (selection == 2)
+            {
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = true;
+                ToReturn.Squares[0,1] = false;
+                ToReturn.Squares[1,1] = false;
+            }
+            else if (selection == 3)
+            {
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = true;
+                ToReturn.Squares[0,1] = true;
+                ToReturn.Squares[1,1] = false;
+            }
+            else if (selection == 4)
+            {
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = false;
+                ToReturn.Squares[0,1] = true;
+                ToReturn.Squares[1,1] = true;
+            }
+            else if (selection == 5)
+            {
+                ToReturn.Squares[0,0] = true;
+                ToReturn.Squares[1,0] = true;
+                ToReturn.Squares[0,1] = false;
+                ToReturn.Squares[1,1] = true;
+            }
+            else if (selection == 6)
+            {
+                ToReturn.Squares[0,0] = false;
+                ToReturn.Squares[1,0] = true;
+                ToReturn.Squares[0,1] = true;
+                ToReturn.Squares[1,1] = true;
             }
 
             return ToReturn;
