@@ -46,12 +46,12 @@ class TetrisAI:
         x_train:list[list[int]] = []
         y_train:list[list[int]] = []
         for game in games:
-            x_train.append(game.states)
-            y_train.append(game.decisions)
+            x_train.extend(game.states)
+            y_train.extend(game.decisions)
 
         # convert to numpy arrays
         x_train = numpy.array(x_train)
-        y_train = numpy.arange(y_train)
+        y_train = numpy.array(y_train)
 
         # train
         self.model.fit(x_train, y_train, epochs=epochs)
@@ -110,7 +110,7 @@ tai = TetrisAI()
 # settings for training
 games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
 best_game_focus:int = 20 # the top X games that will be trained on
-accrue_games_before_training:int = 200 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
+accrue_games_before_training:int = 20 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
 training_epochs:int = 50 # the number of epochs those accrued good games are trained on
 total_games:int = 1000 # the total number of games to train on. Once the model has been trained on this number, it will stop
 
