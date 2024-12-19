@@ -108,11 +108,11 @@ print("Constructing model...")
 tai = TetrisAI()  
 
 # settings for training
-games_in_batch:int = 500 # how many games will be played (simulated), with the top X% being used to train
-best_game_focus:int = 50 # the top X games that will be trained on
-accrue_games_before_training:int = 500 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
+games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
+best_game_focus:int = 20 # the top X games that will be trained on
+accrue_games_before_training:int = 200 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
 training_epochs:int = 50 # the number of epochs those accrued good games are trained on
-total_games:int = 10000 # the total number of games to train on. Once the model has been trained on this number, it will stop
+total_games:int = 1000 # the total number of games to train on. Once the model has been trained on this number, it will stop
 
 # numbers to track
 games_trained:int = 0
@@ -127,6 +127,13 @@ while games_trained < total_games:
             print("Simulating game # " + str(x) + " / " + str(games_in_batch))
             pg = simulate_game(tai)
             GameSimulations.append(pg)
+
+        # get avg score
+        score:int = 0
+        for pg in GameSimulations:
+            score = score + pg.final_score
+        avg_score:float = score / len(GameSimulations)
+        print("Avg score of this group of " + str(len(GameSimulations)) + " simulations: " + str(avg_score))
 
         # sort by score
         print("Sorting " + str(len(GameSimulations)) + " games by score...")
