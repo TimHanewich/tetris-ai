@@ -1,8 +1,15 @@
+print("Importing dependencies...")
 import keras
 import random
 import numpy
 import tetris
 import representation
+
+class PlayedGame:
+    def __init__(self):
+        self.states:list[int] = [] # a list of all states evaluated
+        self.decisions:list[int] = [] # a list of all decisions made
+        self.final_score:int = 0 # the final score of the game after it was over
 
 class TetrisAI:
 
@@ -32,11 +39,25 @@ class TetrisAI:
         vals:list[float] = outputs[0]
         return int(numpy.argmax(vals))
 
-class PlayedGame:
-    def __init__(self):
-        self.states:list[int] = [] # a list of all states evaluated
-        self.decisions:list[int] = [] # a list of all decisions made
-        self.final_score:int = 0 # the final score of the game after it was over
+    def train(self, games:list[PlayedGame], epochs:int) -> None:
+        """Trains the neural network on a series of games that were deemed to be of relative success."""
+        
+        # assemble the big list of inputs and outputs
+        x_train:list[list[int]] = []
+        y_train:list[list[int]] = []
+        for game in games:
+            x_train.append(game.states)
+            y_train.append(game.decisions)
+
+        # convert to numpy arrays
+        x_train = numpy.array(x_train)
+        y_train = numpy.arange(y_train)
+
+        # train
+        self.model.fit(x_train, y_train, epochs=epochs)
+    
+
+
 
 def simulate_game(tai:TetrisAI) -> PlayedGame:
     ToReturn = PlayedGame()
@@ -67,7 +88,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         try:
             gs.drop(p, shift)
         except tetris.InvalidShiftException as ex:
-            
+
             # mark down the final score as 0
             ToReturn.final_score = 0
 
@@ -82,9 +103,50 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
             ToReturn.final_score = gs.score() # mark down final score
             return ToReturn
 
-tai = TetrisAI()        
-GameSimulations:list[PlayedGame] = []
-for x in range(0, 100):
-    print("Simulating game # " + str(x))
-    pg = simulate_game(tai)
-    GameSimulations.append(pg)
+# construct model
+print("Constructing model...")
+tai = TetrisAI()  
+
+# settings for training
+games_in_batch:int = 500 # how many games will be played (simulated), with the top X% being used to train
+best_game_focus:int = 50 # the top X games that will be trained on
+accrue_games_before_training:int = 500 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
+training_epochs:int = 50 # the number of epochs those accrued good games are trained on
+total_games:int = 10000 # the total number of games to train on. Once the model has been trained on this number, it will stop
+
+# numbers to track
+games_trained:int = 0
+while games_trained < total_games:
+
+    GamesToTrainOn:list[PlayedGame] = [] # the top games that we will train on later
+    while len(GamesToTrainOn < accrue_games_before_training):
+
+        # play (simulate) games
+        GameSimulations:list[PlayedGame] = []
+        for x in range(0, games_in_batch):
+            print("Simulating game # " + str(x) + " / " + str(games_in_batch))
+            pg = simulate_game(tai)
+            GameSimulations.append(pg)
+
+        # sort by score
+        print("Sorting " + str(len(GameSimulations)) + " games by score...")
+        GameSimulationsOrdered:list[PlayedGame] = []
+        while len(GameSimulations) > 0:
+            best:PlayedGame = GameSimulations[0]
+            for pg in GameSimulations:
+                if pg.final_score > best.final_score:
+                    best = pg
+            GameSimulationsOrdered.append(best)
+            GameSimulations.remove(best)
+
+        # take the top X games and store them
+        print("Selecting best " + str(best_game_focus) + " games for future training...")
+        BestGames:list[PlayedGame] = [] 
+        for i in range(best_game_focus): # take the top ones
+            BestGames.append(GameSimulationsOrdered[i])
+    
+    # we now have enough games accrued to start training, train now!
+    print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
+    tai.train(GamesToTrainOn, training_epochs)
+    games_trained = games_trained + len(GamesToTrainOn)
+    print("Training complete! Total games trained now @ " + str(games_trained) + " out of goal of " + str(total_games) + ".")
