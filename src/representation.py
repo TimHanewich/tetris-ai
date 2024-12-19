@@ -1,7 +1,6 @@
 import tetris
 
-def StateInputs(p:tetris.Piece, gs:tetris.GameState):
-    
+def PieceState(p:tetris.Piece) -> list[int]:
     ToReturn:list[int] = []
 
     # add piece
@@ -9,6 +8,12 @@ def StateInputs(p:tetris.Piece, gs:tetris.GameState):
     ToReturn.append(int(p.squares[0][1]))
     ToReturn.append(int(p.squares[1][0]))
     ToReturn.append(int(p.squares[1][1]))
+
+    return ToReturn
+
+def BoardState(gs:tetris.GameState) -> list[int]:
+
+    ToReturn:list[int] = []
 
     # add board by row
     ToReturn.append(int(gs.board[0][0]))
