@@ -80,6 +80,10 @@ class TetrisAI:
 
         # train
         self.model.fit([x1_train,x2_train], y_train, epochs=epochs)
+
+    def save(self, path:str) -> None:
+        """Saves the keras model to file"""
+        self.model.save(path)
     
 def simulate_game(tai:TetrisAI) -> PlayedGame:
     ToReturn = PlayedGame()
