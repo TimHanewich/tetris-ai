@@ -14,3 +14,8 @@
 - The above loop continues until 500 games to train on are reached
 - The 500 games are trained on against X number of epochs
 - The above process repeats X times (until it has trained on ~10,000 games)
+
+## Model Checkpoints, with Descriptions
+|Checkpoint|Commit|Description|
+|-|-|-|
+|[download](https://github.com/TimHanewich/tetris-ai/releases/download/1/checkpoint14.keras)|`be880bb6decf65e8d3c7356aa235f011550d7a36`|First attempt at NN structure, all a flat layer. Self-played and trained on 14,000 games. Achieves an average score around 21-22 it seems|.
