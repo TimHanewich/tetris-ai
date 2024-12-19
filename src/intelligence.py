@@ -7,7 +7,8 @@ import representation
 
 class PlayedGame:
     def __init__(self):
-        self.states:list[int] = [] # a list of all states evaluated
+        self.piece_states:list[int] = [] # a list of all piece states we ran into
+        self.board_states:list[int] = [] # a list of all board states we ran into
         self.decisions:list[int] = [] # a list of all decisions made
         self.final_score:int = 0 # the final score of the game after it was over
 
@@ -58,6 +59,13 @@ class TetrisAI:
 
     def train(self, games:list[PlayedGame], epochs:int) -> None:
         """Trains the neural network on a series of games that were deemed to be of relative success."""
+
+        # assemble big list of inputs and outputs
+        # x1_train:list[list[int]] = [] # piece inputs
+        # x2_train:list[list[int]] = [] # board inputs
+        # y_train:list[list[int]] = [] # the "correct decision" outputs
+        # for game in games:
+        #     x1_train.extend()
         
         # assemble the big list of inputs and outputs
         x_train:list[list[int]] = []
@@ -84,19 +92,21 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         p:tetris.Piece = tetris.Piece()
         p.randomize()
 
-        # create the input representation
-        inputs:list[int] = representation.StateInputs(p, gs)
+        # before moving create the board state situation and piece state
+        piece_state:list[int] = representation.PieceState(p)
+        board_state:list[int] = representation.BoardState(gs)
 
-        # ask the NN to play the next game
+        # ask the NN to deicde what the next move should be (decide where to drop the piece)
         shift:int = tai.choose_move(p, gs)
 
-        # create the output representation
+        # create the output representation of that move
         outputs:list[int] = [0,0,0,0]
         outputs[shift] = 1
 
         # log the input/output pair
-        ToReturn.states.append(inputs)
-        ToReturn.decisions.append(outputs)
+        ToReturn.piece_states.append(piece_state) # add the piece we just dealt with
+        ToReturn.board_states.append(board_state) # add the board we just dealt with
+        ToReturn.decisions.append(outputs) # add the decision we just made
 
         # make the move
         try:
@@ -112,7 +122,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
             print("Unhandled exception in move execution: " + str(ex))
             input("Waiting for next enter from you.")
 
-        # if the game is over, finish
+        # if the game is now over, finish
         if gs.over():
             ToReturn.final_score = gs.score() # mark down final score
             return ToReturn
