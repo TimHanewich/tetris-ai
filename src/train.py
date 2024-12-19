@@ -1,8 +1,18 @@
 import intelligence
 
-# construct model
-print("Constructing model...")
-tai = intelligence.TetrisAI()  
+### SETTINGS ###
+save_path = r""
+################
+
+# construct/load model
+tai:intelligence.TetrisAI = None
+if save_path != None and save_path != "":
+    print("Loading model checkpoint at '" + save_path + "'...")
+    tai = intelligence.TetrisAI(save_path)
+    print("Model loaded!")
+else:
+    print("Constructing new model...")
+    tai = intelligence.TetrisAI()  
 
 # settings for training
 games_in_batch:int = 200 # how many games will be played (simulated), with the top X% being used to train
