@@ -1,6 +1,4 @@
 import intelligence
-import representation
-import tetris
 
 # construct model
 print("Constructing model...")
