@@ -15,30 +15,45 @@ class TetrisAI:
 
     def __init__(self):
 
-        # build neural network
-        self.model = keras.Sequential()
-        self.model.add(keras.layers.Input(shape=(36,))) # inputs
-        self.model.add(keras.layers.Dense(800, "relu"))
-        self.model.add(keras.layers.Dense(500, "relu"))
-        self.model.add(keras.layers.Dense(500, "relu"))
-        self.model.add(keras.layers.Dense(350, "relu"))
-        self.model.add(keras.layers.Dense(250, "relu"))
-        self.model.add(keras.layers.Dense(200, "relu"))
-        self.model.add(keras.layers.Dense(150, "relu"))
-        self.model.add(keras.layers.Dense(100, "relu"))
-        self.model.add(keras.layers.Dense(50, "relu"))
-        self.model.add(keras.layers.Dense(25, "relu"))
-        self.model.add(keras.layers.Dense(4)) # outputs 
-        self.model.compile("adam", "mean_squared_error")
+        # build NN v2
+
+        # build input piece portion, followed by some hidden layers
+        input_piece = keras.layers.Input(shape=(4,))
+        carry_piece = keras.layers.Dense(16, "relu")(input_piece)
+        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+
+        # build input board portion, followed by some layers
+        input_board = keras.layers.Input(shape=(32,))
+        carry_board = keras.layers.Dense(128, "relu")(input_board)
+        carry_board = keras.layers.Dense(128, "relu")(carry_board)
+        carry_board = keras.layers.Dense(128, "relu")(carry_board)
+        carry_board = keras.layers.Dense(128, "relu")(carry_board)
+
+        # combine the two into one layer, followed by some layers
+        combined = keras.layers.concatenate([carry_piece, carry_board])
+        carry = keras.layers.Dense(256, "relu")(combined)
+        carry = keras.layers.Dense(256, "relu")(carry)
+        carry = keras.layers.Dense(256, "relu")(carry)
+        carry = keras.layers.Dense(256, "relu")(carry)
+        output = keras.layers.Dense(4, "softmax")(carry)
+
+        # construct the model
+        self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
+        self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
     def choose_move(self, p:tetris.Piece, gs:tetris.GameState) -> int:
         """Uses the neural network to choose the next move, returned as a shift between 0 and 3"""
 
-        inputs:list[int] = representation.StateInputs(p, gs) # convert new piece and game state as representation of ints
-        ninputs = numpy.array([inputs]) # load into a numpy array
-        outputs = self.model.predict(ninputs, verbose=False)
-        
-        vals:list[float] = outputs[0]
+        inputs_piece:list[int] = representation.PieceState(p)
+        inputs_board:list[int] = representation.BoardState(gs)
+
+        x1 = numpy.array([inputs_piece])
+        x2 = numpy.array([inputs_board])
+
+        prediction = self.model.predict([x1,x2])
+        vals:list[float] = prediction[0]
         return int(numpy.argmax(vals))
 
     def train(self, games:list[PlayedGame], epochs:int) -> None:
