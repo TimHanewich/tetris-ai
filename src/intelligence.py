@@ -104,12 +104,12 @@ print("Constructing model...")
 tai = TetrisAI()  
 
 # settings for training
-games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
+games_in_batch:int = 200 # how many games will be played (simulated), with the top X% being used to train
 best_game_focus:int = 20 # the top X games that will be trained on
-accrue_games_before_training:int = 100 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
-training_epochs:int = 50 # the number of epochs those accrued good games are trained on
+accrue_games_before_training:int = 1000 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
+training_epochs:int = 30 # the number of epochs those accrued good games are trained on
 total_games:int = 100000 # the total number of games to train on. Once the model has been trained on this number, it will stop
-save_checkpoint_every_trained:int = 100 # after training each X number of games, a checkpoint will be saved
+save_checkpoint_every_trained:int = 1000 # after training each X number of games, a checkpoint will be saved
 
 # numbers to track
 games_trained:int = 0
