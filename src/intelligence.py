@@ -14,35 +14,39 @@ class PlayedGame:
 
 class TetrisAI:
 
-    def __init__(self):
+    def __init__(self, save_file_path:str = None):
 
-        # build NN v2
+        # if there is a save_file_path provided, load that
+        if save_file_path != None:
+            self.model = keras.models.load_model(save_file_path) # load from file path
+        else:
+            # build NN v2
 
-        # build input piece portion, followed by some hidden layers
-        input_piece = keras.layers.Input(shape=(4,))
-        carry_piece = keras.layers.Dense(16, "relu")(input_piece)
-        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-        carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            # build input piece portion, followed by some hidden layers
+            input_piece = keras.layers.Input(shape=(4,))
+            carry_piece = keras.layers.Dense(16, "relu")(input_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
 
-        # build input board portion, followed by some layers
-        input_board = keras.layers.Input(shape=(32,))
-        carry_board = keras.layers.Dense(128, "relu")(input_board)
-        carry_board = keras.layers.Dense(128, "relu")(carry_board)
-        carry_board = keras.layers.Dense(128, "relu")(carry_board)
-        carry_board = keras.layers.Dense(128, "relu")(carry_board)
+            # build input board portion, followed by some layers
+            input_board = keras.layers.Input(shape=(32,))
+            carry_board = keras.layers.Dense(128, "relu")(input_board)
+            carry_board = keras.layers.Dense(128, "relu")(carry_board)
+            carry_board = keras.layers.Dense(128, "relu")(carry_board)
+            carry_board = keras.layers.Dense(128, "relu")(carry_board)
 
-        # combine the two into one layer, followed by some layers
-        combined = keras.layers.concatenate([carry_piece, carry_board])
-        carry = keras.layers.Dense(256, "relu")(combined)
-        carry = keras.layers.Dense(256, "relu")(carry)
-        carry = keras.layers.Dense(256, "relu")(carry)
-        carry = keras.layers.Dense(256, "relu")(carry)
-        output = keras.layers.Dense(4, "softmax")(carry)
+            # combine the two into one layer, followed by some layers
+            combined = keras.layers.concatenate([carry_piece, carry_board])
+            carry = keras.layers.Dense(256, "relu")(combined)
+            carry = keras.layers.Dense(256, "relu")(carry)
+            carry = keras.layers.Dense(256, "relu")(carry)
+            carry = keras.layers.Dense(256, "relu")(carry)
+            output = keras.layers.Dense(4, "softmax")(carry)
 
-        # construct the model
-        self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
-        self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
+            # construct the model
+            self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
+            self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
     def choose_move(self, p:tetris.Piece, gs:tetris.GameState) -> int:
         """Uses the neural network to choose the next move, returned as a shift between 0 and 3"""
