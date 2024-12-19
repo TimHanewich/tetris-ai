@@ -61,25 +61,21 @@ class TetrisAI:
         """Trains the neural network on a series of games that were deemed to be of relative success."""
 
         # assemble big list of inputs and outputs
-        # x1_train:list[list[int]] = [] # piece inputs
-        # x2_train:list[list[int]] = [] # board inputs
-        # y_train:list[list[int]] = [] # the "correct decision" outputs
-        # for game in games:
-        #     x1_train.extend()
-        
-        # assemble the big list of inputs and outputs
-        x_train:list[list[int]] = []
-        y_train:list[list[int]] = []
+        x1_train:list[list[int]] = [] # piece inputs
+        x2_train:list[list[int]] = [] # board inputs
+        y_train:list[list[int]] = [] # the "correct decision" outputs
         for game in games:
-            x_train.extend(game.states)
+            x1_train.extend(game.piece_states)
+            x2_train.extend(game.board_states)
             y_train.extend(game.decisions)
 
         # convert to numpy arrays
-        x_train = numpy.array(x_train)
+        x1_train = numpy.array(x1_train)
+        x2_train = numpy.array(x2_train)
         y_train = numpy.array(y_train)
 
         # train
-        self.model.fit(x_train, y_train, epochs=epochs)
+        self.model.fit([x1_train,x2_train], y_train, epochs=epochs)
     
 def simulate_game(tai:TetrisAI) -> PlayedGame:
     ToReturn = PlayedGame()
