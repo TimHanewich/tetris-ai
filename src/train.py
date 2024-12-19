@@ -77,7 +77,7 @@ while games_trained < total_games:
     # is it time to save a checkpoint?
     if (games_trained - games_trained_at_last_checkpoint) >= save_checkpoint_every_trained: # it is time to save a checkpoint
         path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint" + str(on_checkpoint) + ".keras"
-        tai.model.save(path)
+        tai.save(path)
         print("Checkpoint # " + str(on_checkpoint) + " saved to " + path + "!")
         on_checkpoint = on_checkpoint + 1
         games_trained_at_last_checkpoint = games_trained
