@@ -119,7 +119,7 @@ games_trained:int = 0
 while games_trained < total_games:
 
     GamesToTrainOn:list[PlayedGame] = [] # the top games that we will train on later
-    while len(GamesToTrainOn < accrue_games_before_training):
+    while len(GamesToTrainOn) < accrue_games_before_training:
 
         # play (simulate) games
         GameSimulations:list[PlayedGame] = []
