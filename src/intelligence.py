@@ -18,7 +18,10 @@ class TetrisAI:
         # build neural network
         self.model = keras.Sequential()
         self.model.add(keras.layers.Input(shape=(36,))) # inputs
-        self.model.add(keras.layers.Dense(300, "relu"))
+        self.model.add(keras.layers.Dense(800, "relu"))
+        self.model.add(keras.layers.Dense(500, "relu"))
+        self.model.add(keras.layers.Dense(500, "relu"))
+        self.model.add(keras.layers.Dense(350, "relu"))
         self.model.add(keras.layers.Dense(250, "relu"))
         self.model.add(keras.layers.Dense(200, "relu"))
         self.model.add(keras.layers.Dense(150, "relu"))
