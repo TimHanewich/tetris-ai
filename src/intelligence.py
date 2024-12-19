@@ -53,7 +53,7 @@ class TetrisAI:
         x1 = numpy.array([inputs_piece])
         x2 = numpy.array([inputs_board])
 
-        prediction = self.model.predict([x1,x2])
+        prediction = self.model.predict([x1,x2], verbose=False)
         vals:list[float] = prediction[0]
         return int(numpy.argmax(vals))
 
