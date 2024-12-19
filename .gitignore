@@ -4,3 +4,4 @@ obj/
 *.xlsx
 myvenv/
 __pycache__/
+checkpoints/
