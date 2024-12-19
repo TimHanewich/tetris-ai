@@ -119,9 +119,10 @@ games_trained:int = 0
 while games_trained < total_games:
 
     GamesToTrainOn:list[PlayedGame] = [] # the top games that we will train on later
+    avg_score:float = 0.0 # will be reported on during training so user watching can track progress
     while len(GamesToTrainOn) < accrue_games_before_training:
 
-        status:str = "(" + str(games_trained) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal)"
+        status:str = "(" + str(games_trained) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal) (" + str(round(avg_score, 1)) + " avg score)"
 
         # play (simulate) games
         GameSimulations:list[PlayedGame] = []
@@ -134,7 +135,7 @@ while games_trained < total_games:
         score:int = 0
         for pg in GameSimulations:
             score = score + pg.final_score
-        avg_score:float = score / len(GameSimulations)
+        avg_score = score / len(GameSimulations)
         print("Avg score of this group of " + str(len(GameSimulations)) + " simulations: " + str(avg_score))
 
         # sort by score
