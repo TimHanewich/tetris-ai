@@ -121,7 +121,7 @@ while games_trained < total_games:
     GamesToTrainOn:list[PlayedGame] = [] # the top games that we will train on later
     while len(GamesToTrainOn) < accrue_games_before_training:
 
-        status:str = "(" + str(len(games_trained)) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal)"
+        status:str = "(" + str(games_trained) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal)"
 
         # play (simulate) games
         GameSimulations:list[PlayedGame] = []
