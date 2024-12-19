@@ -37,3 +37,8 @@ x2 = np.array([board])
 
 v = model.predict([x1,x2])
 print(v)
+
+correct:list[int] = [0,0,1,0]
+y = np.array([correct])
+
+model.fit([x1,x2],y)
