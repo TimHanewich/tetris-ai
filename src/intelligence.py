@@ -1,6 +1,4 @@
-print("Importing dependencies...")
 import keras
-import random
 import numpy
 import tetris
 import representation
