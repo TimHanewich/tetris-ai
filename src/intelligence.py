@@ -150,9 +150,8 @@ while games_trained < total_games:
 
         # take the top X games and store them
         print("Selecting best " + str(best_game_focus) + " games for future training...")
-        BestGames:list[PlayedGame] = [] 
         for i in range(best_game_focus): # take the top ones
-            BestGames.append(GameSimulationsOrdered[i])
+            GamesToTrainOn.append(GameSimulationsOrdered[i])
     
     # we now have enough games accrued to start training, train now!
     print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
