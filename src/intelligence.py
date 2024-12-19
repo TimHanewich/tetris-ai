@@ -28,7 +28,6 @@ class TetrisAI:
         self.model.add(keras.layers.Dense(4)) # outputs 
         self.model.compile("adam", "mean_squared_error")
 
-
     def choose_move(self, p:tetris.Piece, gs:tetris.GameState) -> int:
         """Uses the neural network to choose the next move, returned as a shift between 0 and 3"""
 
@@ -56,9 +55,6 @@ class TetrisAI:
         # train
         self.model.fit(x_train, y_train, epochs=epochs)
     
-
-
-
 def simulate_game(tai:TetrisAI) -> PlayedGame:
     ToReturn = PlayedGame()
 
@@ -110,12 +106,17 @@ tai = TetrisAI()
 # settings for training
 games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
 best_game_focus:int = 20 # the top X games that will be trained on
-accrue_games_before_training:int = 200 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
+accrue_games_before_training:int = 500 # the number of TOP games (games that will be trained on) which will be collected before it trains on them
 training_epochs:int = 50 # the number of epochs those accrued good games are trained on
-total_games:int = 1000 # the total number of games to train on. Once the model has been trained on this number, it will stop
+total_games:int = 100000 # the total number of games to train on. Once the model has been trained on this number, it will stop
+save_checkpoint_every_trained:int = 5000 # after training each X number of games, a checkpoint will be saved
 
 # numbers to track
 games_trained:int = 0
+on_checkpoint:int = 0
+games_trained_at_last_checkpoint:int = 0
+
+# train!
 while games_trained < total_games:
 
     GamesToTrainOn:list[PlayedGame] = [] # the top games that we will train on later
@@ -159,3 +160,11 @@ while games_trained < total_games:
     tai.train(GamesToTrainOn, training_epochs)
     games_trained = games_trained + len(GamesToTrainOn)
     print("Training complete! Total games trained now @ " + str(games_trained) + " out of goal of " + str(total_games) + ".")
+
+    # is it time to save a checkpoint?
+    if (games_trained - games_trained_at_last_checkpoint) >= save_checkpoint_every_trained: # it is time to save a checkpoint
+        path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint" + str(on_checkpoint) + ".keras"
+        tai.model.save(path)
+        print("Checkpoint # " + str(on_checkpoint) + " saved to " + path + "!")
+        on_checkpoint = on_checkpoint + 1
+        games_trained_at_last_checkpoint = games_trained
