@@ -73,7 +73,7 @@ while games_trained < total_games:
         score:int = 0
         for pg in GamesToTrainOn:
             score = score + pg.final_score
-        avg_score = score / len(GameSimulations)
+        avg_score = score / len(GamesToTrainOn)
         print("Avg score of best " + str(best_game_focus) + " games: " + str(avg_score))
     
     # we now have enough games accrued to start training, train now!
