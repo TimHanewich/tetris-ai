@@ -2,6 +2,7 @@ import keras
 import numpy
 import tetris
 import representation
+import random
 
 class PlayedGame:
     def __init__(self):
@@ -46,19 +47,29 @@ class TetrisAI:
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
             self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
-    def choose_move(self, p:tetris.Piece, gs:tetris.GameState) -> int:
-        """Uses the neural network to choose the next move, returned as a shift between 0 and 3"""
+    def choose_move(self, p:tetris.Piece, gs:tetris.GameState, random_exploration:bool = True) -> int:
+        """Uses the neural network to choose the next move, returned as a shift between 0 and 3. If `random_exploration` is True, will sometimes (infrequently) choose a random move, encouraging exploration."""
 
-        inputs_piece:list[int] = representation.PieceState(p)
-        inputs_board:list[int] = representation.BoardState(gs)
+        # determine if we should select random or choose move normally using the neural network
+        # (the select random option is there for exploration)
+        SelectRandom:bool = False
+        if random_exploration:
+            if (oddsof(0.10)): # % of the time it should select a random move
+                SelectRandom = True
+        
+        if SelectRandom: # if it was determined we should play a random move (explore), play a random move
+            return random.randint(0, 3)
+        else: # if it was not determined we should play a random move, select normally
+            inputs_piece:list[int] = representation.PieceState(p)
+            inputs_board:list[int] = representation.BoardState(gs)
 
-        x1 = numpy.array([inputs_piece])
-        x2 = numpy.array([inputs_board])
+            x1 = numpy.array([inputs_piece])
+            x2 = numpy.array([inputs_board])
 
-        prediction = self.model.predict([x1,x2], verbose=False)
-        vals:list[float] = prediction[0]
-        SelectedMove:int = int(numpy.argmax(vals))
-        return SelectedMove
+            prediction = self.model.predict([x1,x2], verbose=False)
+            vals:list[float] = prediction[0]
+            SelectedMove:int = int(numpy.argmax(vals))
+            return SelectedMove
 
     def train(self, games:list[PlayedGame], epochs:int) -> None:
         """Trains the neural network on a series of games that were deemed to be of relative success."""
@@ -129,3 +140,6 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         if gs.over():
             ToReturn.final_score = gs.score() # mark down final score
             return ToReturn
+        
+def oddsof(odds:float) -> bool:
+    return random.random() < odds
