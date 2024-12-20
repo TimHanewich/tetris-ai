@@ -2,7 +2,7 @@ import intelligence
 import sys
 
 ### SETTINGS ###
-save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoint.keras" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
+save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
 
 # settings for training
 games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
