@@ -45,6 +45,7 @@ while games_trained < total_games:
             sys.stdout.flush() # clear the current line
             pg = intelligence.simulate_game(tai)
             GameSimulations.append(pg)
+        print() # go to next line
 
         # get avg score
         score:int = 0
