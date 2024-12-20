@@ -1,4 +1,5 @@
 import intelligence
+import sys
 
 ### SETTINGS ###
 save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoint.keras" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -39,7 +40,9 @@ while games_trained < total_games:
         # play (simulate) games
         GameSimulations:list[intelligence.PlayedGame] = []
         for x in range(0, games_in_batch):
-            print(status + " " + "Simulating game # " + str(x) + " / " + str(games_in_batch))
+            status_line:str = "\r" + status + " " + "Simulating game # " + str(x+1) + " / " + str(games_in_batch)
+            sys.stdout.write(status_line) # write the update
+            sys.stdout.flush() # clear the current line
             pg = intelligence.simulate_game(tai)
             GameSimulations.append(pg)
 
