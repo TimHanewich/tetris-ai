@@ -19,4 +19,4 @@
 |Checkpoint|Commit|Description|
 |-|-|-|
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/1/checkpoint14.keras)|`be880bb6decf65e8d3c7356aa235f011550d7a36`|First attempt at NN structure, all a flat layer. Self-played and trained on 14,000 games. Achieves an average score around 21-22 it seems.|
-|[download]()|`76d5f57a4bf488c0ada0ad5c1efac46d7084686a`|Second neural network structure (separate paths for piece + board). Trained on 11,000 games. Achieves an average score of around 21-22 it seems.|
+|[download]()|`76d5f57a4bf488c0ada0ad5c1efac46d7084686a`|Second neural network structure (separate paths for piece + board). Trained on 11,000 games. Achieves an average score of around 21-22 it seems. I am quite certain the model fell into a "local optimum" and only plays moves `0` and moves `2`.|
