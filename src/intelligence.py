@@ -58,7 +58,8 @@ class TetrisAI:
                 SelectRandom = True
         
         if SelectRandom: # if it was determined we should play a random move (explore), play a random move
-            return random.randint(0, 3)
+            RandomMove:int = random.randint(0, 3)
+            return RandomMove
         else: # if it was not determined we should play a random move, select normally
             inputs_piece:list[int] = representation.PieceState(p)
             inputs_board:list[int] = representation.BoardState(gs)
