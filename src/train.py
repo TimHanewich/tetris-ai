@@ -68,6 +68,13 @@ while games_trained < total_games:
         print("Selecting best " + str(best_game_focus) + " games for future training...")
         for i in range(best_game_focus): # take the top ones
             GamesToTrainOn.append(GameSimulationsOrdered[i])
+
+        # get avg score of best group
+        score:int = 0
+        for pg in GamesToTrainOn:
+            score = score + pg.final_score
+        avg_score = score / len(GameSimulations)
+        print("Avg score of best " + str(best_game_focus) + " games: " + str(avg_score))
     
     # we now have enough games accrued to start training, train now!
     print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
