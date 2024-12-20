@@ -57,7 +57,8 @@ class TetrisAI:
 
         prediction = self.model.predict([x1,x2], verbose=False)
         vals:list[float] = prediction[0]
-        return int(numpy.argmax(vals))
+        SelectedMove:int = int(numpy.argmax(vals))
+        return SelectedMove
 
     def train(self, games:list[PlayedGame], epochs:int) -> None:
         """Trains the neural network on a series of games that were deemed to be of relative success."""
