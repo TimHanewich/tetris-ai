@@ -10,7 +10,6 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 games_in_episode:int = 300 # how many games will be played (simulated), with the top X% being used to train
 train_on_best_count:int = 30 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
 training_epochs:int = 30 # the number of epochs those accrued good games are trained on
-total_games:int = 100000 # the total number of games to train on. Once the model has been trained on this number, training will end
 save_checkpoint_every_trained:int = 1000 # after training each X number of games, a checkpoint will be saved
 ################
 
@@ -30,7 +29,7 @@ on_checkpoint:int = 0
 games_trained_at_last_checkpoint:int = 0
 
 # train!
-while games_trained < total_games:
+while True:
 
     # collect games to train on by playing continuously, over and over
     scores:list[int] = [] # all of the scores that have been played so far in this episode
@@ -41,7 +40,7 @@ while games_trained < total_games:
     for x in range(0, games_in_episode):
 
         # construct the line to write
-        status_line:str = "\r" + "(" + str(games_trained) + " trained / " + str(total_games) + " goal)" + " " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
+        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
         
         # append avg score if there is at least one game yet (can't divide by 0!)
         if len(scores) > 0:
