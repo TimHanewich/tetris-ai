@@ -19,5 +19,6 @@ while True:
         # if game over
         if gs.over():
             print("Game over!")
-            print("Score: " + str(gs.score))
+            print("Score: " + str(gs.score()))
             input("Enter to go to next game.")
+            gs = tetris.GameState()
