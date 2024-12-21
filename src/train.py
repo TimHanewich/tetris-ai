@@ -49,6 +49,12 @@ while games_trained < total_games:
             GameSimulations.append(pg) # add this game to the list of games played
         print() # go to next line
 
+        # calculate and print the average score of that batch of games
+        batch_score_sum:int = 0
+        for pg in GameSimulations:
+            batch_score_sum = batch_score_sum + pg.final_score
+        print("Avg. score of those " + str(games_in_batch) + " games: " + str(round(batch_score_sum / len(GameSimulations), 1)))
+
         # sort that batch of games by score, highest to lowest
         print("Sorting " + str(len(GameSimulations)) + " games by score...")
         GameSimulationsOrdered:list[intelligence.PlayedGame] = []
