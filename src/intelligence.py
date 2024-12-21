@@ -29,10 +29,10 @@ class TetrisAI:
 
             # build input board portion, followed by some layers
             input_board = keras.layers.Input(shape=(4,), name="input_board")
-            carry_board = keras.layers.Dense(32, "relu", name="board_layer1")(input_board)
-            carry_board = keras.layers.Dense(32, "relu", name="board_layer2")(carry_board)
-            carry_board = keras.layers.Dense(32, "relu", name="board_layer3")(carry_board)
-            carry_board = keras.layers.Dense(32, "relu", name="board_layer4")(carry_board)
+            carry_board = keras.layers.Dense(64, "relu", name="board_layer1")(input_board)
+            carry_board = keras.layers.Dense(64, "relu", name="board_layer2")(carry_board)
+            carry_board = keras.layers.Dense(64, "relu", name="board_layer3")(carry_board)
+            carry_board = keras.layers.Dense(64, "relu", name="board_layer4")(carry_board)
 
             # combine the two into one layer, followed by some layers
             combined = keras.layers.concatenate([carry_piece, carry_board], name="combined")
