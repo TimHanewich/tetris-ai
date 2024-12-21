@@ -1,8 +1,10 @@
 import intelligence
 import sys
+import tools
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
+log_file_path:str = r"" # during training, if you want logs to be saved in this file about the progress of performance improvemnts during training, put a path to a txt file here. Logs will be appended.
 
 # settings for training
 games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
@@ -53,7 +55,7 @@ while games_trained < total_games:
         batch_score_sum:int = 0
         for pg in GameSimulations:
             batch_score_sum = batch_score_sum + pg.final_score
-        print("Avg. score of those " + str(games_in_batch) + " games: " + str(round(batch_score_sum / len(GameSimulations), 1)))
+        print("Avg. score of this episode, over " + str(len(scores)) + " games: " + str(round(sum(scores) / len(scores), 1)))
 
         # sort that batch of games by score, highest to lowest
         print("Sorting " + str(len(GameSimulations)) + " games by score...")
@@ -76,7 +78,7 @@ while games_trained < total_games:
         for pg in GamesToTrainOn:
             score = score + pg.final_score
         avg_score_best = score / len(GamesToTrainOn)
-        print("Avg. score of " + str(best_game_focus) + " BEST games from that batch of " + str(games_in_batch) + ": " + str(round(avg_score_best,1)))
+        print("Avg. score of " + str(best_game_focus) + " BEST games from that last batch of " + str(games_in_batch) + ": " + str(round(avg_score_best,1)))
     
     # we now have enough games accrued to start training, train now!
     print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
