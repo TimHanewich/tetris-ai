@@ -1,7 +1,7 @@
 ## Neural Network Design
-- **36 inputs**
-    - 4 inputs that describes the new piece that must be dropped (`0` or `1` based on the square's occupancy). *Map described here: https://i.imgur.com/cFzaaeJ.png*
-    - 32 inputs that describe the board (`0` or `1` based on the square's occupancy). *Map described here: https://i.imgur.com/cFzaaeJ.png*
+- 6 input
+    - **2 inputs for piece** (2 ints)
+    - **4 inputs for board** (4 ints)
 - **4 outputs**, each one representing how many spaces to the right the shift input was (the only player-controlled input)
     - Output #1 = 0 Shift
     - Output #2 = 1 Shift
