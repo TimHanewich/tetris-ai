@@ -21,7 +21,7 @@ def PieceState(p:tetris.Piece) -> list[int]:
     else: # if both in the first column are not on, do 2.
         ToReturn.append(2)
 
-    retrun ToReturn
+    return ToReturn
     
 
 def BoardState(gs:tetris.GameState) -> list[int]:
