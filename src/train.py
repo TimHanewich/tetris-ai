@@ -31,30 +31,25 @@ games_trained_at_last_checkpoint:int = 0
 # train!
 while games_trained < total_games:
 
+    # collect games to train on by playing continuously, over and over
+    scores:list[int] = [] # all of the scores that have been played so far by this model version (in this current state, before the next training)
     GamesToTrainOn:list[intelligence.PlayedGame] = [] # the top games that we will train on later
-    avg_score:float = 0.0 # will be reported on during training so user watching can track progress
     while len(GamesToTrainOn) < accrue_games_before_training:
 
-        status:str = "(" + str(games_trained) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal) (" + str(round(avg_score, 1)) + " avg score)"
+        status:str = "(" + str(games_trained) + " trained / " + str(total_games) + " goal) (" + str(len(GamesToTrainOn)) + " accrued / " + str(accrue_games_before_training) + " batch goal)"
 
-        # play (simulate) games
+        # play (simulate) a small-ish batch of games
         GameSimulations:list[intelligence.PlayedGame] = []
         for x in range(0, games_in_batch):
             status_line:str = "\r" + status + " " + "Simulating game # " + str(x+1) + " / " + str(games_in_batch)
             sys.stdout.write(status_line) # write the update
             sys.stdout.flush() # clear the current line
             pg = intelligence.simulate_game(tai)
-            GameSimulations.append(pg)
+            scores.append(pg.final_score) # append final score to the ongoing list
+            GameSimulations.append(pg) # add this game to the list of games played
         print() # go to next line
 
-        # get avg score
-        score:int = 0
-        for pg in GameSimulations:
-            score = score + pg.final_score
-        avg_score = score / len(GameSimulations)
-        print("Avg score of this group of " + str(len(GameSimulations)) + " simulations: " + str(avg_score))
-
-        # sort by score
+        # sort that batch of games by score, highest to lowest
         print("Sorting " + str(len(GameSimulations)) + " games by score...")
         GameSimulationsOrdered:list[intelligence.PlayedGame] = []
         while len(GameSimulations) > 0:
@@ -65,7 +60,7 @@ while games_trained < total_games:
             GameSimulationsOrdered.append(best)
             GameSimulations.remove(best)
 
-        # take the top X games and store them
+        # take the top X games and put them in a list that we will train on later
         print("Selecting best " + str(best_game_focus) + " games for future training...")
         for i in range(best_game_focus): # take the top ones
             GamesToTrainOn.append(GameSimulationsOrdered[i])
