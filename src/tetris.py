@@ -105,16 +105,8 @@ class GameState:
         ToReturn = ToReturn + "\n" + "  0123"
         return ToReturn
     
-    def drop(self, p:Piece, shift:int) -> None:
-        """Drops a piece into the board, shifting it horizontally a number of columns."""
-        
-        # ensure shift is within bounds
-        if shift < 0 or shift > 3:
-            raise Exception("Shift must be between 0 and 3")
-
-        # firstly, if they are trying to shift THREE spaces, ensure none of the second column is occupied. That is the only way that a shift of three is even possible (can't "extend" column B beyond the limits of the board)
-        if shift == 3 and (p.squares[0][1] or p.squares[1][1]):
-            raise InvalidShiftException("Cannot shift piece 3 units to the right because the piece has column B occupied.")
+    def column_depths(self) -> list[int]:
+        """Calculates how 'deep' the available space on each column (4 columns) goes."""
 
         # record the depth of every column
         column_depths:list[int] = [0,0,0,0]
@@ -128,6 +120,20 @@ class GameState:
                     column_depths[ci] = column_depths[ci] + 1
                 else: # we hit a floor!
                     column_collisions[ci] = True
+    
+    def drop(self, p:Piece, shift:int) -> None:
+        """Drops a piece into the board, shifting it horizontally a number of columns."""
+        
+        # ensure shift is within bounds
+        if shift < 0 or shift > 3:
+            raise Exception("Shift must be between 0 and 3")
+
+        # firstly, if they are trying to shift THREE spaces, ensure none of the second column is occupied. That is the only way that a shift of three is even possible (can't "extend" column B beyond the limits of the board)
+        if shift == 3 and (p.squares[0][1] or p.squares[1][1]):
+            raise InvalidShiftException("Cannot shift piece 3 units to the right because the piece has column B occupied.")
+
+        # calculate column depths
+        column_depths:list[int] = self.column_depths()
 
         # determine the drop depth, the minimum depth of the target columns
         drop_depth:int = 0
