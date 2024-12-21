@@ -133,12 +133,12 @@ class GameState:
             # add "travel distance" based on the shape of the piece
             if p.squares[1][0] == False: # if bottom left is not occupied, add one
                 columnA_depth = columnA_depth + 1
-                if p.squares[0][0] == False: # if top left is also not occupied, add one
-                    columnA_depth = columnA_depth + 1
+                if p.squares[0][0] == False: # if top left is also not occupied, add infinity! There is nothing here that would stop any vertical movement!
+                    columnA_depth = columnA_depth + 999
             if p.squares[1][1] == False: # if bottom right is not occupied, add one
                 columnB_depth = columnB_depth + 1
-                if p.squares[0][1] == False: # if top right is not occupied, add one
-                    columnB_depth = columnB_depth + 1
+                if p.squares[0][1] == False: # if top right is not occupied, add infinity! There is nothing here that would stop any vertical movement!
+                    columnB_depth = columnB_depth + 999
 
             drop_depth:int = min(columnA_depth, columnB_depth)
 
