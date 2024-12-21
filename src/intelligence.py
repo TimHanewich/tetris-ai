@@ -116,12 +116,12 @@ class TetrisAI:
         
         # handle if we should select random or actually decide what to do using the NN
         if SelectRandom: # if it was determined we should play a random move (explore), play a random move. But play a legal move that does not invalidate the game!
+            RandomMoveToReturn:int = 0
             if p.width == 2: # if the width is 2, that means a shift of 3 would not work (part of the piece would be hanging off the board, an illegal move). So only consider the moves 0, 1, and 2.
-                RandomMove:int = random.randint(0, 2)
-                return RandomMove
+                RandomMoveToReturn:int = random.randint(0, 2)
             else:
-                RandomMove:int = random.randint(0, 3)
-                return RandomMove
+                RandomMoveToReturn:int = random.randint(0, 3)
+            return RandomMoveToReturn
         else: # if it was not determined we should play a random move, select normally
             inputs_piece:list[int] = PieceState(p)
             inputs_board:list[int] = BoardState(gs)
