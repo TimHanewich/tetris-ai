@@ -58,7 +58,7 @@ while games_trained < total_games:
         GameSimulations.append(pg) # add this game to the list of games played
     print() # go to next line
 
-    # sort that batch of games by score, highest to lowest
+    # sort that all of this episode's games by score, highest to lowest
     print("Sorting " + str(len(GameSimulations)) + " games by score...")
     GameSimulationsOrdered:list[intelligence.PlayedGame] = []
     while len(GameSimulations) > 0:
@@ -69,7 +69,7 @@ while games_trained < total_games:
         GameSimulationsOrdered.append(best)
         GameSimulations.remove(best)
 
-    # take the top X games and put them in a list that we will train on later
+    # take the top X games and put them in a list that we will train on
     print("Selecting best " + str(train_on_best_count) + " games from this episode for training...")
     for i in range(train_on_best_count): # take the top ones
         GamesToTrainOn.append(GameSimulationsOrdered[i])
@@ -86,7 +86,7 @@ while games_trained < total_games:
         tools.log(log_file_path, "Avg score over " + str(len(scores)) + " games of model trained on " + str(games_trained) + " games: " + str(round(sum(scores) / len(scores), 1)))
 
     # we now have enough games accrued to start training, train now!
-    print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
+    print("Entering training phase for these best " + str(len(GamesToTrainOn)) + " games")
     tai.train(GamesToTrainOn, training_epochs)
     games_trained = games_trained + len(GamesToTrainOn)
     print("Training complete! Total games trained now @ " + str(games_trained) + " out of goal of " + str(total_games) + ".")
