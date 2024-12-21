@@ -112,7 +112,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         board_state:list[int] = representation.BoardState(gs)
 
         # ask the NN to deicde what the next move should be (decide where to drop the piece)
-        shift:int = tai.choose_move(p, gs)
+        shift:int = tai.choose_move(p, gs, True)
 
         # create the output representation of that move
         outputs:list[int] = [0,0,0,0]
