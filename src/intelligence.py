@@ -47,7 +47,7 @@ class TetrisAI:
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
             self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
-    def choose_move(self, p:tetris.Piece, gs:tetris.GameState, random_exploration:bool = True) -> int:
+    def choose_move(self, p:tetris.Piece, gs:tetris.GameState, random_exploration:bool) -> int:
         """Uses the neural network to choose the next move, returned as a shift between 0 and 3. If `random_exploration` is True, will sometimes (infrequently) choose a random move, encouraging exploration."""
 
         # determine if we should select random or choose move normally using the neural network
