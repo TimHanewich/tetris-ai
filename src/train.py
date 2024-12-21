@@ -88,7 +88,7 @@ while True:
     print("Entering training phase for these best " + str(len(GamesToTrainOn)) + " games")
     tai.train(GamesToTrainOn, training_epochs)
     games_trained = games_trained + len(GamesToTrainOn)
-    print("Training complete! Total games trained now @ " + str(games_trained) + " out of goal of " + str(total_games) + ".")
+    print("Training complete! Total games trained now @ " + str(games_trained) + ".")
 
     # is it time to save a checkpoint?
     if (games_trained - games_trained_at_last_checkpoint) >= save_checkpoint_every_trained: # it is time to save a checkpoint
