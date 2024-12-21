@@ -7,15 +7,19 @@ class Piece:
 
     def __str__(self):
         ToReturn = ""
-        ToReturn = "--" + "\n"
+        ToReturn = " ┌──┐" + "\n"
+        onRow:int = 0
         for row in self.squares:
+            ToReturn = ToReturn + str(onRow) +  "│"
             for column in row:
                 if column:
                     ToReturn = ToReturn + "X"
                 else:
                     ToReturn = ToReturn + " "
-            ToReturn = ToReturn + "\n"
-        ToReturn = ToReturn + "--"
+            ToReturn = ToReturn + "│\n"
+            onRow = onRow + 1
+        ToReturn = ToReturn + " └──┘"
+        ToReturn = ToReturn + "\n" + "  01"
         return ToReturn
 
     def randomize(self) -> None:
@@ -77,15 +81,19 @@ class GameState:
 
     def __str__(self):
         ToReturn:str = ""
-        ToReturn = "----" + "\n"
+        ToReturn = " ┌────┐" + "\n"
+        onRow:int = 0
         for row in self.board:
+            ToReturn = ToReturn + str(onRow) + "│"
             for column in row:
                 if column:
                     ToReturn = ToReturn + "X"
                 else:
                     ToReturn = ToReturn + " "
-            ToReturn = ToReturn + "\n"
-        ToReturn = ToReturn + "----"
+            ToReturn = ToReturn + "│\n"
+            onRow = onRow + 1
+        ToReturn = ToReturn + " └────┘"
+        ToReturn = ToReturn + "\n" + "  0123"
         return ToReturn
     
     def drop(self, p:Piece, shift:int) -> None:
