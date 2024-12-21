@@ -2,64 +2,7 @@ import keras
 import numpy
 import tetris
 import random
-
-def PieceState(p:tetris.Piece) -> list[int]:
-    ToReturn:list[int] = []
-
-    # add piece
-    ToReturn.append(int(p.squares[0][0]))
-    ToReturn.append(int(p.squares[0][1]))
-    ToReturn.append(int(p.squares[1][0]))
-    ToReturn.append(int(p.squares[1][1]))
-
-    return ToReturn
-
-def BoardState(gs:tetris.GameState) -> list[int]:
-
-    ToReturn:list[int] = []
-
-    # add board by row
-    ToReturn.append(int(gs.board[0][0]))
-    ToReturn.append(int(gs.board[0][1]))
-    ToReturn.append(int(gs.board[0][2]))
-    ToReturn.append(int(gs.board[0][3]))
-
-    ToReturn.append(int(gs.board[1][0]))
-    ToReturn.append(int(gs.board[1][1]))
-    ToReturn.append(int(gs.board[1][2]))
-    ToReturn.append(int(gs.board[1][3]))
-
-    ToReturn.append(int(gs.board[2][0]))
-    ToReturn.append(int(gs.board[2][1]))
-    ToReturn.append(int(gs.board[2][2]))
-    ToReturn.append(int(gs.board[2][3]))
-
-    ToReturn.append(int(gs.board[3][0]))
-    ToReturn.append(int(gs.board[3][1]))
-    ToReturn.append(int(gs.board[3][2]))
-    ToReturn.append(int(gs.board[3][3]))
-
-    ToReturn.append(int(gs.board[4][0]))
-    ToReturn.append(int(gs.board[4][1]))
-    ToReturn.append(int(gs.board[4][2]))
-    ToReturn.append(int(gs.board[4][3]))
-
-    ToReturn.append(int(gs.board[5][0]))
-    ToReturn.append(int(gs.board[5][1]))
-    ToReturn.append(int(gs.board[5][2]))
-    ToReturn.append(int(gs.board[5][3]))
-
-    ToReturn.append(int(gs.board[6][0]))
-    ToReturn.append(int(gs.board[6][1]))
-    ToReturn.append(int(gs.board[6][2]))
-    ToReturn.append(int(gs.board[6][3]))
-
-    ToReturn.append(int(gs.board[7][0]))
-    ToReturn.append(int(gs.board[7][1]))
-    ToReturn.append(int(gs.board[7][2]))
-    ToReturn.append(int(gs.board[7][3]))
-
-    return ToReturn
+import representation
 
 class PlayedGame:
     def __init__(self):
@@ -123,8 +66,8 @@ class TetrisAI:
                 RandomMoveToReturn:int = random.randint(0, 3)
             return RandomMoveToReturn
         else: # if it was not determined we should play a random move, select normally
-            inputs_piece:list[int] = PieceState(p)
-            inputs_board:list[int] = BoardState(gs)
+            inputs_piece:list[int] = representation.PieceState(p)
+            inputs_board:list[int] = representation.BoardState(gs)
 
             x1 = numpy.array([inputs_piece])
             x2 = numpy.array([inputs_board])
@@ -170,8 +113,8 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         p.randomize()
 
         # before moving create the board state situation and piece state
-        piece_state:list[int] = PieceState(p)
-        board_state:list[int] = BoardState(gs)
+        piece_state:list[int] = representation.PieceState(p)
+        board_state:list[int] = representation.BoardState(gs)
 
         # ask the NN to deicde what the next move should be (decide where to drop the piece)
         shift:int = tai.choose_move(p, gs, True)
