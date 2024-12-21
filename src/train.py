@@ -80,6 +80,10 @@ while games_trained < total_games:
         avg_score_best = score / len(GamesToTrainOn)
         print("Avg. score of " + str(best_game_focus) + " BEST games from that last batch of " + str(games_in_batch) + ": " + str(round(avg_score_best,1)))
     
+    # if they provided a log file path, log the average performance in there
+    if log_file_path != None and log_file_path != "":
+        tools.log(log_file_path, "Avg score over " + str(len(scores)) + " games of model trained on " + str(games_trained) + " games: " + str(round(sum(scores) / len(scores), 1)))
+
     # we now have enough games accrued to start training, train now!
     print(str(len(GamesToTrainOn)) + " games reached. Entering training phase...")
     tai.train(GamesToTrainOn, training_epochs)
