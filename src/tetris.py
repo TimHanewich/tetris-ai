@@ -13,7 +13,7 @@ class Piece:
             ToReturn = ToReturn + str(onRow) +  "│"
             for column in row:
                 if column:
-                    ToReturn = ToReturn + "X"
+                    ToReturn = ToReturn + "█"
                 else:
                     ToReturn = ToReturn + " "
             ToReturn = ToReturn + "│\n"
@@ -87,7 +87,7 @@ class GameState:
             ToReturn = ToReturn + str(onRow) + "│"
             for column in row:
                 if column:
-                    ToReturn = ToReturn + "X"
+                    ToReturn = ToReturn + "█"
                 else:
                     ToReturn = ToReturn + " "
             ToReturn = ToReturn + "│\n"
