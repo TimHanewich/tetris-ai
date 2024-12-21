@@ -2,7 +2,7 @@ import intelligence
 import sys
 
 ### SETTINGS ###
-save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
+model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
 
 # settings for training
 games_in_batch:int = 100 # how many games will be played (simulated), with the top X% being used to train
@@ -15,9 +15,9 @@ save_checkpoint_every_trained:int = 1000 # after training each X number of games
 
 # construct/load model
 tai:intelligence.TetrisAI = None
-if save_path != None and save_path != "":
-    print("Loading model checkpoint at '" + save_path + "'...")
-    tai = intelligence.TetrisAI(save_path)
+if model_save_path != None and model_save_path != "":
+    print("Loading model checkpoint at '" + model_save_path + "'...")
+    tai = intelligence.TetrisAI(model_save_path)
     print("Model loaded!")
 else:
     print("Constructing new model...")
