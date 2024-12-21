@@ -120,6 +120,8 @@ class GameState:
                     column_depths[ci] = column_depths[ci] + 1
                 else: # we hit a floor!
                     column_collisions[ci] = True
+
+        return column_depths
     
     def drop(self, p:Piece, shift:int) -> None:
         """Drops a piece into the board, shifting it horizontally a number of columns."""
