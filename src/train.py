@@ -8,7 +8,7 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 
 # settings for training
 games_in_episode:int = 500 # how many games will be played (simulated), with the top X% being used to train
-train_on_best_count:int = 50 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
+train_on_best_count:int = 100 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
 training_epochs:int = 30 # the number of epochs those accrued good games are trained on
 save_checkpoint_every_trained:int = 500 # after training each X number of games, a checkpoint will be saved
 ################
