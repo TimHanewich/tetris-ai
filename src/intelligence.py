@@ -21,9 +21,11 @@ class TetrisAI:
         else:
 
             # build input piece portion, followed by some hidden layers
-            input_piece = keras.layers.Input(shape=(2,))
-            carry_piece = keras.layers.Dense(8, "relu")(input_piece)
-            carry_piece = keras.layers.Dense(8, "relu")(carry_piece)
+            input_piece = keras.layers.Input(shape=(4,))
+            carry_piece = keras.layers.Dense(16, "relu")(input_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
 
             # build input board portion, followed by some layers
             input_board = keras.layers.Input(shape=(4,))
