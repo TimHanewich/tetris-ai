@@ -21,24 +21,24 @@ class TetrisAI:
         else:
 
             # build input piece portion, followed by some hidden layers
-            input_piece = keras.layers.Input(shape=(4,))
-            carry_piece = keras.layers.Dense(16, "relu")(input_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            input_piece = keras.layers.Input(shape=(4,), name="input_piece")
+            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer1")(input_piece)
+            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer2")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer3")(carry_piece)
+            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer4")(carry_piece)
 
             # build input board portion, followed by some layers
-            input_board = keras.layers.Input(shape=(4,))
-            carry_board = keras.layers.Dense(16, "relu")(input_board)
-            carry_board = keras.layers.Dense(16, "relu")(input_board)
-            carry_board = keras.layers.Dense(16, "relu")(input_board)
-            carry_board = keras.layers.Dense(16, "relu")(input_board)
+            input_board = keras.layers.Input(shape=(4,), name="input_board")
+            carry_board = keras.layers.Dense(16, "relu", name="board_layer1")(input_board)
+            carry_board = keras.layers.Dense(16, "relu", name="board_layer2")(input_board)
+            carry_board = keras.layers.Dense(16, "relu", name="board_layer3")(input_board)
+            carry_board = keras.layers.Dense(16, "relu", name="board_layer4")(input_board)
 
             # combine the two into one layer, followed by some layers
-            combined = keras.layers.concatenate([carry_piece, carry_board])
-            carry = keras.layers.Dense(72, "relu")(combined)
-            carry = keras.layers.Dense(72, "relu")(carry)
-            output = keras.layers.Dense(4, "softmax")(carry)
+            combined = keras.layers.concatenate([carry_piece, carry_board], name="combined")
+            carry = keras.layers.Dense(72, "relu", name="combined_layer1")(combined)
+            carry = keras.layers.Dense(72, "relu", name="combined_layer2")(carry)
+            output = keras.layers.Dense(4, "softmax", name="output")(carry)
 
             # construct the model
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
