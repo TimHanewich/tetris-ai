@@ -8,13 +8,6 @@
     - Output #3 = 2 Shift
     - Output #4 = 3 Shift (sometimes a 3 shift will be an invalid move. When this happens, the game will be deemed over and the score will be 0, significantly penalizing *against* this decision when it is illegal (a piece with width of 2))
 
-## How training will work, example
-- Model plays 300 games
-- The best 30 games are selected and stored to an array
-- The above loop continues until 500 games to train on are reached
-- The 500 games are trained on against X number of epochs
-- The above process repeats X times (until it has trained on ~10,000 games)
-
 ## Model Checkpoints, with Descriptions
 |Checkpoint|Commit|Description|
 |-|-|-|
