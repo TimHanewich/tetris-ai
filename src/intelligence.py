@@ -19,28 +19,23 @@ class TetrisAI:
         if save_file_path != None:
             self.model = keras.models.load_model(save_file_path) # load from file path
         else:
-            # build NN v2
 
             # build input piece portion, followed by some hidden layers
-            input_piece = keras.layers.Input(shape=(4,))
-            carry_piece = keras.layers.Dense(16, "relu")(input_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu")(carry_piece)
+            input_piece = keras.layers.Input(shape=(2,))
+            carry_piece = keras.layers.Dense(8, "relu")(input_piece)
+            carry_piece = keras.layers.Dense(8, "relu")(carry_piece)
 
             # build input board portion, followed by some layers
-            input_board = keras.layers.Input(shape=(32,))
-            carry_board = keras.layers.Dense(128, "relu")(input_board)
-            carry_board = keras.layers.Dense(128, "relu")(carry_board)
-            carry_board = keras.layers.Dense(128, "relu")(carry_board)
-            carry_board = keras.layers.Dense(128, "relu")(carry_board)
+            input_board = keras.layers.Input(shape=(4,))
+            carry_board = keras.layers.Dense(16, "relu")(input_board)
+            carry_board = keras.layers.Dense(16, "relu")(input_board)
+            carry_board = keras.layers.Dense(16, "relu")(input_board)
+            carry_board = keras.layers.Dense(16, "relu")(input_board)
 
             # combine the two into one layer, followed by some layers
             combined = keras.layers.concatenate([carry_piece, carry_board])
-            carry = keras.layers.Dense(256, "relu")(combined)
-            carry = keras.layers.Dense(256, "relu")(carry)
-            carry = keras.layers.Dense(256, "relu")(carry)
-            carry = keras.layers.Dense(256, "relu")(carry)
+            carry = keras.layers.Dense(72, "relu")(combined)
+            carry = keras.layers.Dense(72, "relu")(carry)
             output = keras.layers.Dense(4, "softmax")(carry)
 
             # construct the model
