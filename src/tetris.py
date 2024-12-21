@@ -117,10 +117,21 @@ class GameState:
         if shift == 3:
             drop_depth = column_depths[shift]
         else:
+
+            # get existing depth of columns
             columnA_depth:int = column_depths[shift]
             columnB_depth:int = column_depths[shift + 1]
-            if p.squares[0][1] == False and p.squares[1][1] == False: # if there are NO squares in the second column of the piece, the depth of that target column doesn't matter! We do not need to check if squares are occupied in column A because according to the random piece generator, column A will NEVER be non-occupied
-                columnB_depth = 99
+            
+            # add "travel distance" based on the shape of the piece
+            if p.squares[1][0] == False: # if bottom left is not occupied, add one
+                columnA_depth = columnA_depth + 1
+                if p.squares[0][0] == False: # if top left is also not occupied, add one
+                    columnA_depth = columnA_depth + 1
+            if p.squares[1][1] == False: # if bottom right is not occupied, add one
+                columnB_depth = columnB_depth + 1
+                if p.squares[0][1] == False: # if top right is not occupied, add one
+                    columnB_depth = columnB_depth + 1
+
             drop_depth:int = min(columnA_depth, columnB_depth)
 
         # if drop depth is 0, that means there is just NO MORE ROOM!
