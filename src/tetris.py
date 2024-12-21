@@ -69,7 +69,16 @@ class Piece:
             return 1
         else:
             return 0
-        
+
+    @property
+    def width(self) -> int:
+        ToReturn:int = 0
+        if self.squares[0][0] or self.squares[1][0]: # if column A has something in it, add one
+            ToReturn = ToReturn + 1
+        if self.squares[0][1] or self.squares[1][1]: # if column B has something in it, add one
+            ToReturn = ToReturn + 1
+        return ToReturn
+
 class InvalidShiftException(Exception):
     def __init__(self, message):
         self.message = message
