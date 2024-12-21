@@ -6,17 +6,17 @@ def PieceState(p:tetris.Piece) -> list[int]:
     ToReturn:list[int] = []
 
     # column A
-    if p[1][0]:
+    if p.squares[1][0]:
         ToReturn.append(0)
-    elif p[0][0]:
+    elif p.squares[0][0]:
         ToReturn.append(1)
     else: # if both in the first column are not on, do 2.
         ToReturn.append(2)
 
     # column B
-    if p[1][1]:
+    if p.squares[1][1]:
         ToReturn.append(0)
-    elif p[0][1]:
+    elif p.squares[0][1]:
         ToReturn.append(1)
     else: # if both in the first column are not on, do 2.
         ToReturn.append(2)
