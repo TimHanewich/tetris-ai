@@ -9,7 +9,8 @@ class PlayedGame:
         self.piece_states:list[int] = [] # a list of all piece states we ran into
         self.board_states:list[int] = [] # a list of all board states we ran into
         self.decisions:list[int] = [] # a list of all decisions made
-        self.final_reward:int = 0 # the final score of the game after it was over
+        self.final_score:int = 0 # the final score of the game after it was over
+        self.final_reward:int = 0 # the final reward of the game after it was over
 
 class TetrisAI:
 
@@ -141,6 +142,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         # if the game is now over, finish
         if gs.over():
             ToReturn.final_reward = gs.reward() # mark down the reward
+            ToReturn.final_score = gs.reward() # mark down the score
             return ToReturn
         
 def oddsof(odds:float) -> bool:
