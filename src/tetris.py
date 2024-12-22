@@ -3,11 +3,102 @@ import random
 
 class Piece:
     def __init__(self):
-        self.squares:list[list[bool]] = [[False, False], [False, False]] # 2 rows of 2 columns
+        self.squares:list[list[bool]] = [[False, False, False, False], [False, False, False, False]] # 2 rows of 4 columns
+
+    def shape(self, id:str) -> None:
+        """Adopts a shape of one of the seven standard tetris Tetriminos (https://tetris.fandom.com/wiki/Tetromino)"""
+        
+        official_shapes:list[str] = ["I","O","T","S","Z","J","L"]
+        if id.upper() not in official_shapes:
+            raise Exception("Unable to adopt shape '" + id + "' as that is not a known Tetrimino shape! Must be one from this list: " + str(official_shapes))
+        
+        # adopt the shape
+        if id.upper() == "I":
+            self.squares[0][0] = False
+            self.squares[0][1] = False
+            self.squares[0][2] = False
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = True
+            self.squares[1][3] = True
+        elif id.upper() == "J":
+            self.squares[0][0] = True
+            self.squares[0][1] = False
+            self.squares[0][2] = False
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = True
+            self.squares[1][3] = False
+        elif id.upper() == "L":
+            self.squares[0][0] = False
+            self.squares[0][1] = False
+            self.squares[0][2] = True
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = True
+            self.squares[1][3] = False
+        elif id.upper() == "O":
+            self.squares[0][0] = True
+            self.squares[0][1] = True
+            self.squares[0][2] = False
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = False
+            self.squares[1][3] = False
+        elif id.upper() == "S":
+            self.squares[0][0] = False
+            self.squares[0][1] = True
+            self.squares[0][2] = True
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = False
+            self.squares[1][3] = False
+        elif id.upper() == "T":
+            self.squares[0][0] = False
+            self.squares[0][1] = True
+            self.squares[0][2] = False
+            self.squares[0][3] = False
+            self.squares[1][0] = True 
+            self.squares[1][1] = True
+            self.squares[1][2] = True
+            self.squares[1][3] = False
+        elif id.upper() == "Z":
+            self.squares[0][0] = True
+            self.squares[0][1] = True
+            self.squares[0][2] = False
+            self.squares[0][3] = False
+            self.squares[1][0] = False 
+            self.squares[1][1] = True
+            self.squares[1][2] = True
+            self.squares[1][3] = False
+
+    def randomize(self) -> None:
+        """Adopts the shape of a random Tetrimino."""
+        r:int = random.randint(0, 6) # pick a number between 0 and 6, including the 0 and 6
+        if r == 0:
+            self.shape("I")
+        elif r == 1:
+            self.shape("J")
+        elif r == 2:
+            self.shape("L")
+        elif r == 3:
+            self.shape("O")
+        elif r == 4:
+            self.shape("S")
+        elif r == 5:
+            self.shape("T")
+        elif r == 6:
+            self.shape("Z")
+
 
     def __str__(self):
         ToReturn = ""
-        ToReturn = " ┌──┐" + "\n"
+        ToReturn = " ┌────┐" + "\n"
         onRow:int = 0
         for row in self.squares:
             ToReturn = ToReturn + str(onRow) +  "│"
@@ -18,48 +109,11 @@ class Piece:
                     ToReturn = ToReturn + " "
             ToReturn = ToReturn + "│\n"
             onRow = onRow + 1
-        ToReturn = ToReturn + " └──┘"
+        ToReturn = ToReturn + " └────┘"
         ToReturn = ToReturn + "\n" + "  01"
         return ToReturn
 
-    def randomize(self) -> None:
-        r:int = random.randint(0, 6) # pick a number between 0 and 6, including the 0 and 6
-
-        if r == 0:
-            self.squares[0][0] = False
-            self.squares[1][0] = True
-            self.squares[0][1] = False
-            self.squares[1][1] = False
-        elif r == 1:
-            self.squares[0][0] = False
-            self.squares[1][0] = True
-            self.squares[0][1] = False
-            self.squares[1][1] = True
-        elif r == 2:
-            self.squares[0][0] = True
-            self.squares[1][0] = True
-            self.squares[0][1] = False
-            self.squares[1][1] = False
-        elif r == 3:
-            self.squares[0][0] = True
-            self.squares[1][0] = True
-            self.squares[0][1] = True
-            self.squares[1][1] = False
-        elif r == 4:
-            self.squares[0][0] = True
-            self.squares[1][0] = False
-            self.squares[0][1] = True
-            self.squares[1][1] = True
-        elif r == 5:
-            self.squares[0][0] = True
-            self.squares[1][0] = True
-            self.squares[0][1] = False
-            self.squares[1][1] = True
-        elif r == 6:
-            self.squares[0][0] = False
-            self.squares[1][0] = True
-            self.squares[0][1] = True
-            self.squares[1][1] = True
+    
     
     def columns_occupied(self) -> int:
         """Checks how many columns the piece is occupying (1 or 2)"""
