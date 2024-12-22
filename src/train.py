@@ -14,7 +14,7 @@ save_checkpoint_every_trained:int = 500 # after training each X number of games,
 
 # epsilon (exploration) settings
 epsilon_initial:float = 0.75 # the initial epsilon value to start at
-epsilon_decay:float = 0.05 # how much to decrease epsilon after each training batch
+epsilon_decay:float = 0.05 # how much to decrease epsilon after each training
 epsilon_min:float = 0.05 # the minimum exploration rate
 ################
 
@@ -46,7 +46,7 @@ while True:
     for x in range(0, games_in_episode):
 
         # construct the line to write
-        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " (epsilon = " + str(epsilon) + ") " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
+        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " (epsilon = " + str(round(epsilon,1)) + ") " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
         
         # append avg score if there is at least one game yet (can't divide by 0!)
         if len(scores) > 0:
