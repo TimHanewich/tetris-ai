@@ -109,7 +109,7 @@ class Piece:
             ToReturn = ToReturn + "│\n"
             onRow = onRow + 1
         ToReturn = ToReturn + " └────┘"
-        ToReturn = ToReturn + "\n" + "  01"
+        ToReturn = ToReturn + "\n" + "  0123"
         return ToReturn
 
     @property
@@ -132,14 +132,21 @@ class InvalidShiftException(Exception):
 
 class GameState:
     def __init__(self):
-        self.board:list[list[bool]] = [[False, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, False], [False, False, False, False]] # 8 rows of 4 columns
+        self.board:list[list[bool]] = [[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False]] # 20 rows of 10 columns
 
     def __str__(self):
         ToReturn:str = ""
-        ToReturn = " ┌────┐" + "\n"
+        ToReturn = "  ┌──────────┐" + "\n"
         onRow:int = 0
         for row in self.board:
-            ToReturn = ToReturn + str(onRow) + "│"
+
+            # add the row number in
+            if onRow >= 10:
+                ToReturn = ToReturn + str(onRow) + "│"
+            else: # if it is a single-digit, add in an extra space so it all lines up
+                ToReturn = ToReturn + " " + str(onRow) + "│" 
+
+            # print every square
             for column in row:
                 if column:
                     ToReturn = ToReturn + "█"
@@ -147,8 +154,8 @@ class GameState:
                     ToReturn = ToReturn + " "
             ToReturn = ToReturn + "│\n"
             onRow = onRow + 1
-        ToReturn = ToReturn + " └────┘"
-        ToReturn = ToReturn + "\n" + "  0123"
+        ToReturn = ToReturn + "  └──────────┘"
+        ToReturn = ToReturn + "\n" + "   0123456789"
         return ToReturn
     
     def column_depths(self) -> list[int]:
