@@ -49,7 +49,7 @@ class TetrisAI:
             self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
     def choose_move(self, p:tetris.Piece, gs:tetris.GameState, epsilon:float = 0.0) -> int:
-        """Uses the neural network to choose the next move, returned as a shift between 0 and 3. 'epsilon' sets the e-greedy value. At 100% (1.0), it will choose a random move every time. At 0%, it will choose the move that it believe is best every time. Higher epsilon encourages exploration."""
+        """Uses the neural network to choose the next move, returned as a shift between 0 and 3. 'epsilon' sets the e-greedy value. At 100% (1.0), it will choose a random legal move every time. At 0%, it will choose the move that it believe is best every time. Higher epsilon encourages exploration."""
         
         # handle if we should select random or actually decide what to do using the NN
         if oddsof(epsilon): # if it was determined we should play a random move (explore), play a random move. But play a legal move that does not invalidate the game!
