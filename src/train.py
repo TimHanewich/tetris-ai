@@ -11,6 +11,11 @@ games_in_episode:int = 150 # how many games will be played (simulated), with the
 train_on_best_count:int = 30 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
 training_epochs:int = 30 # the number of epochs those accrued good games are trained on
 save_checkpoint_every_trained:int = 500 # after training each X number of games, a checkpoint will be saved
+
+# epsilon (exploration) settings
+epsilon_initial:float = 0.75 # the initial epsilon value to start at
+epsilon_decay:float = 0.05 # how much to decrease epsilon after each training batch
+epsilon_min:float = 0.05 # the minimum exploration rate
 ################
 
 # construct/load model
@@ -29,6 +34,7 @@ on_checkpoint:int = 0
 games_trained_at_last_checkpoint:int = 0
 
 # train!
+epsilon:float = epsilon_initial
 while True:
 
     # collect games to train on by playing continuously, over and over
@@ -40,7 +46,7 @@ while True:
     for x in range(0, games_in_episode):
 
         # construct the line to write
-        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
+        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " (epsilon = " + str(epsilon) + ") " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
         
         # append avg score if there is at least one game yet (can't divide by 0!)
         if len(scores) > 0:
@@ -52,7 +58,7 @@ while True:
         sys.stdout.flush() # clear the current line
 
         # simulate and append
-        pg = intelligence.simulate_game(tai)
+        pg = intelligence.simulate_game(tai, epsilon)
         scores.append(pg.final_score) # append final score to the ongoing list
         GameSimulations.append(pg) # add this game to the list of games played
     print() # go to next line
@@ -83,7 +89,7 @@ while True:
     # if they provided a log file path, log the average performance in there
     tools.log(log_file_path, "Avg. score over " + str(len(scores)) + " games played by model trained on " + str(games_trained) + " games: " + str(round(sum(scores) / len(scores), 1)) + ". Avg. score of best " + str(len(GamesToTrainOn)) + " games from that episode we will now train on in preparation of next episode: " + str(round(avg_score_best, 1)))
 
-    # we now have enough games accrued to start training, train now!
+    # Train!
     print("Entering training phase for these best " + str(len(GamesToTrainOn)) + " games")
     tai.train(GamesToTrainOn, training_epochs)
     games_trained = games_trained + len(GamesToTrainOn)
@@ -96,3 +102,6 @@ while True:
         print("Checkpoint # " + str(on_checkpoint) + " saved to " + path + "!")
         on_checkpoint = on_checkpoint + 1
         games_trained_at_last_checkpoint = games_trained
+
+    # decrement (decay) epsilon, but don't go below minumum
+    epsilon = max(epsilon - epsilon_decay, epsilon_min)
