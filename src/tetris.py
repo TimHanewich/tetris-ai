@@ -159,16 +159,16 @@ class GameState:
         return ToReturn
     
     def column_depths(self) -> list[int]:
-        """Calculates how 'deep' the available space on each column (4 columns) goes."""
+        """Calculates how 'deep' the available space on each column (10 columns) goes, from the top down."""
 
         # record the depth of every column
-        column_depths:list[int] = [0,0,0,0]
-        column_collisions:list[bool] = [False, False, False, False] # records whether we have "reached the floor" of this column, a.k.a. reached a square that is occupied.
+        column_depths:list[int] = [0,0,0,0,0,0,0,0,0,0]
+        column_collisions:list[bool] = [False, False, False, False, False, False, False, False, False, False] # records whether we have "reached the floor" of this column, a.k.a. reached a square that is occupied.
 
         # find the depth of each column 
         # In this sense, "depth" is the number of squares that are clear, to be clear
-        for ri in range(0, len(self.board)):    
-            for ci in range(0, 4):
+        for ri in range(0, len(self.board)): # for every row   
+            for ci in range(0, len(self.board[0])): # for every column (use first row to know how many columns there are)
                 if column_collisions[ci] == False and self.board[ri][ci] == False: # if column X has not been recorded yet and the column in this row is not occupied, increment the depth
                     column_depths[ci] = column_depths[ci] + 1
                 else: # we hit a floor!
@@ -180,48 +180,49 @@ class GameState:
         """Drops a piece into the board, shifting it horizontally a number of columns."""
         
         # ensure shift is within bounds
-        if shift < 0 or shift > 3:
-            raise Exception("Shift must be between 0 and 3")
+        if shift < 0 or shift > 8: # the shift will NEVER be more than 8. Because the smallest piece is 2-wide, which would be a shift of 8
+            raise Exception("Shift must be between 0 and 8")
 
-        # firstly, if they are trying to shift THREE spaces, ensure none of the second column is occupied. That is the only way that a shift of three is even possible (can't "extend" column B beyond the limits of the board)
-        if shift == 3 and (p.squares[0][1] or p.squares[1][1]):
-            raise InvalidShiftException("Cannot shift piece 3 units to the right because the piece has column B occupied.")
+        # ensure they are not trying to shift and do an illegal move
+        if shift == 8 and p.width > 2:
+            raise InvalidShiftException("Shift of " + str(shift) + " not possible for this piece as it is too wide!")
+        if shift == 7 and p.width >= 4:
+            raise InvalidShiftException("Shift of " + str(shift) + " not possible for this piece as it is too wide!")
 
         # calculate column depths
         column_depths:list[int] = self.column_depths()
 
-        # determine the drop depth, the minimum depth of the target columns
-        drop_depth:int = 0
-        if shift == 3:
-            drop_depth = column_depths[shift]
-        else:
+        # get target column depths
+        target_column_depths:list[int] = []
+        for shifti in range(shift, shift + p.width):
+            if shifti <= 9: # do not go beyond bounds of board (horizontally)
+                target_column_depths.append(column_depths[shifti])
 
-            # get existing depth of columns
-            columnA_depth:int = column_depths[shift]
-            columnB_depth:int = column_depths[shift + 1]
-            
-            # add "travel distance" based on the shape of the piece
-            if p.squares[1][0] == False: # if bottom left is not occupied, add one
-                columnA_depth = columnA_depth + 1
-                if p.squares[0][0] == False: # if top left is also not occupied, add infinity! There is nothing here that would stop any vertical movement!
-                    columnA_depth = columnA_depth + 999
-            if p.squares[1][1] == False: # if bottom right is not occupied, add one
-                columnB_depth = columnB_depth + 1
-                if p.squares[0][1] == False: # if top right is not occupied, add infinity! There is nothing here that would stop any vertical movement!
-                    columnB_depth = columnB_depth + 999
+        # add potential "travel distance" based on the "floor" (bottom row square) of the piece having gaps
+        for column_index in range(0, len(target_column_depths)):
+            if p.squares[1][column_index] == False:
+                target_column_depths[column_index] = target_column_depths[column_index] + 1
 
-            drop_depth:int = min(columnA_depth, columnB_depth)
+        # the drop depth is the minimum drop depth of every target column (after considering gaps, which we did)
+        drop_depth:int = min(target_column_depths)
 
         # if drop depth is 0, that means there is just NO MORE ROOM!
         if drop_depth == 0:
             raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
+        
+        # drop by "copying in the values"
+        for row_index in range(0, len(p.squares)):
+            for col_index in range(0, len(p.squares[row_index])):
+                if p.squares[row_index][col_index]: # if the square of this piece is occupied
+                    
+                    # set "subtractor". This manual thing is needed so we aren't "flipping" (mirroring) the shape vertically when copying
+                    subtractor:int
+                    if row_index == 0:
+                        subtractor = 2
+                    elif row_index == 1:
+                        subtractor = 1
 
-        # drop by "copying in" the values
-        # note that we are only "copying" over the TRUE values. We do not want to CLEAR a square on the board if the square of the piece is not occupied... that may cause an accidental clearing of a square on the board.
-        if p.squares[1][0]: self.board[drop_depth - 1][shift] = p.squares[1][0] # bottom left
-        if p.squares[0][0]: self.board[drop_depth - 2][shift] = p.squares[0][0] # top left
-        if p.squares[1][1]: self.board[drop_depth - 1][shift + 1] = p.squares[1][1] # bottom right
-        if p.squares[0][1]: self.board[drop_depth - 2][shift + 1] = p.squares[0][1] # top right
+                    self.board[drop_depth - subtractor][shift + col_index] = True
     
     def over(self) -> bool:
         """Checks if the game is over, determined by if there is at least a single square in the top row occupied"""
