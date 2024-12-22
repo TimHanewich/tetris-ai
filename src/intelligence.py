@@ -9,7 +9,7 @@ class PlayedGame:
         self.piece_states:list[int] = [] # a list of all piece states we ran into
         self.board_states:list[int] = [] # a list of all board states we ran into
         self.decisions:list[int] = [] # a list of all decisions made
-        self.final_score:int = 0 # the final score of the game after it was over
+        self.final_reward:int = 0 # the final score of the game after it was over
 
 class TetrisAI:
 
@@ -131,20 +131,16 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         # make the move
         try:
             gs.drop(p, shift)
-        except tetris.InvalidShiftException as ex:
-
-            # mark down the final score as 0
-            ToReturn.final_score = 0
-
-            # return
-            return ToReturn
+        except tetris.InvalidShiftException as ex:            
+            ToReturn.final_reward = 0 # mark down the final reward as 0 as punishment for playing an illegal move!
+            return ToReturn # return
         except Exception as ex:
             print("Unhandled exception in move execution: " + str(ex))
             input("Waiting for next enter from you.")
 
         # if the game is now over, finish
         if gs.over():
-            ToReturn.final_score = gs.score() # mark down final score
+            ToReturn.final_reward = gs.reward() # mark down the reward
             return ToReturn
         
 def oddsof(odds:float) -> bool:
