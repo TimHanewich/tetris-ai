@@ -95,7 +95,7 @@ class TetrisAI:
         """Saves the keras model to file"""
         self.model.save(path)
     
-def simulate_game(tai:TetrisAI) -> PlayedGame:
+def simulate_game(tai:TetrisAI, epsilon:float = 0.0) -> PlayedGame:
     ToReturn = PlayedGame()
 
     # simulate the game
@@ -111,7 +111,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         board_state:list[int] = representation.BoardState(gs)
 
         # ask the NN to deicde what the next move should be (decide where to drop the piece)
-        shift:int = tai.choose_move(p, gs, 0.5)
+        shift:int = tai.choose_move(p, gs, epsilon)
 
         # create the output representation of that move
         outputs:list[int] = [0,0,0,0]
