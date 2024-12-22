@@ -21,3 +21,6 @@
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/8/checkpoint3.keras)|`b8c434386e4751dab6bc57e7566359e1c9628e1e`|Trained in 4 separate sessions of varying degrees of `epsilon`, resulting in a final consistent score of what I thought was 28-29, but then I realized there was a bug in this commit where the `reward` was being logged as the `score`, so the score was inflated. It actually scored around 22-23 it seemed. See [this picture](https://i.imgur.com/99bq35K.png) for a description on each stage. Log file for all training sessions [here](https://github.com/TimHanewich/tetris-ai/releases/download/8/log.txt).|
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/9/checkpoint16.keras)|`596465ec72acabbd7dd943e7a06b17a75dbdf436`|Trained on ~8,500 games using a decaying epsilon method|
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/10/checkpoint4.keras)|`42d0edfafff1dfd5a13f62959e550dcce06d87cd`|First training on full-sized board (10 wide, 20 high) with the larger pieces (4x2). Scores around ~102 it seems. Log file [here](https://github.com/TimHanewich/tetris-ai/releases/download/10/log.txt)|
+
+## Notable Commits
+- `d5ca7955af27c2f5c2cd2bb663db6b33981a892f` - last commit before moving from a 4x8 to a 10x20 board and 2x2 to 4x2 pieces (WxH in all of those).
