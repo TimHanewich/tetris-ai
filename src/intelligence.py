@@ -48,18 +48,11 @@ class TetrisAI:
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
             self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
 
-    def choose_move(self, p:tetris.Piece, gs:tetris.GameState, random_exploration:bool) -> int:
-        """Uses the neural network to choose the next move, returned as a shift between 0 and 3. If `random_exploration` is True, will sometimes (infrequently) choose a random move, encouraging exploration."""
-
-        # determine if we should select random or choose move normally using the neural network
-        # (the select random option is there for exploration)
-        SelectRandom:bool = False
-        if random_exploration:
-            if (oddsof(0.10)): # % of the time it should select a random move
-                SelectRandom = True
+    def choose_move(self, p:tetris.Piece, gs:tetris.GameState, epsilon:float = 0.0) -> int:
+        """Uses the neural network to choose the next move, returned as a shift between 0 and 3. 'epsilon' sets the e-greedy value. At 100% (1.0), it will choose a random move every time. At 0%, it will choose the move that it believe is best every time. Higher epsilon encourages exploration."""
         
         # handle if we should select random or actually decide what to do using the NN
-        if SelectRandom: # if it was determined we should play a random move (explore), play a random move. But play a legal move that does not invalidate the game!
+        if oddsof(epsilon): # if it was determined we should play a random move (explore), play a random move. But play a legal move that does not invalidate the game!
             RandomMoveToReturn:int = 0
             if p.width == 2: # if the width is 2, that means a shift of 3 would not work (part of the piece would be hanging off the board, an illegal move). So only consider the moves 0, 1, and 2.
                 RandomMoveToReturn:int = random.randint(0, 2)
@@ -118,7 +111,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         board_state:list[int] = representation.BoardState(gs)
 
         # ask the NN to deicde what the next move should be (decide where to drop the piece)
-        shift:int = tai.choose_move(p, gs, True)
+        shift:int = tai.choose_move(p, gs, 0.5)
 
         # create the output representation of that move
         outputs:list[int] = [0,0,0,0]

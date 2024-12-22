@@ -17,7 +17,7 @@ while True:
         print(str(gs))
 
         # get move
-        shift:int = tai.choose_move(p, gs, False)
+        shift:int = tai.choose_move(p, gs, 0.0)
         print("Move: " + str(shift))
         input("Enter to execute the move it selected")
 
