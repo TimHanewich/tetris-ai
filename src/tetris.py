@@ -185,3 +185,24 @@ class GameState:
                 if column:
                     ToReturn = ToReturn + 1
         return ToReturn
+    
+    def row_full(self, row) -> bool:
+        """Returns True if every column (file) of a particular row is occupied."""
+        return self.board[row][0] and self.board[row][1] and self.board[row][2] and self.board[row][3]
+    
+    def reward(self) -> float:
+        """Returns a rough estimate for how successful the game was, considering more than just the score (i.e. also considering density of rows)"""
+
+        ToReturn:float = float(self.score())
+
+        # reward for each row being full, but more for certain rows
+        if self.row_full(0): ToReturn = ToReturn + 0.5
+        if self.row_full(1): ToReturn = ToReturn + 0.8
+        if self.row_full(2): ToReturn = ToReturn + 1.0
+        if self.row_full(3): ToReturn = ToReturn + 1.2
+        if self.row_full(4): ToReturn = ToReturn + 1.4
+        if self.row_full(5): ToReturn = ToReturn + 1.6
+        if self.row_full(6): ToReturn = ToReturn + 1.8
+        if self.row_full(7): ToReturn = ToReturn + 2.0
+
+        return ToReturn
