@@ -242,7 +242,10 @@ class GameState:
     
     def row_full(self, row) -> bool:
         """Returns True if every column (file) of a particular row is occupied."""
-        return self.board[row][0] and self.board[row][1] and self.board[row][2] and self.board[row][3]
+        for column in self.board[row]:
+            if column == False:
+                return False
+        return True
     
     def reward(self) -> float:
         """Returns a rough estimate for how successful the game was, considering more than just the score (i.e. also considering density of rows)"""
@@ -250,13 +253,25 @@ class GameState:
         ToReturn:float = float(self.score())
 
         # reward for each row being full, but more for certain rows
-        if self.row_full(0): ToReturn = ToReturn + 0.5
-        if self.row_full(1): ToReturn = ToReturn + 0.8
-        if self.row_full(2): ToReturn = ToReturn + 1.0
-        if self.row_full(3): ToReturn = ToReturn + 1.2
-        if self.row_full(4): ToReturn = ToReturn + 1.4
-        if self.row_full(5): ToReturn = ToReturn + 1.6
-        if self.row_full(6): ToReturn = ToReturn + 1.8
-        if self.row_full(7): ToReturn = ToReturn + 2.0
+        if self.row_full(0): ToReturn = ToReturn + 1.2
+        if self.row_full(1): ToReturn = ToReturn + 1.4
+        if self.row_full(2): ToReturn = ToReturn + 1.6
+        if self.row_full(3): ToReturn = ToReturn + 1.8
+        if self.row_full(4): ToReturn = ToReturn + 2.0
+        if self.row_full(5): ToReturn = ToReturn + 2.2
+        if self.row_full(6): ToReturn = ToReturn + 2.4
+        if self.row_full(7): ToReturn = ToReturn + 2.6
+        if self.row_full(8): ToReturn = ToReturn + 2.8
+        if self.row_full(9): ToReturn = ToReturn + 3.0
+        if self.row_full(10): ToReturn = ToReturn + 3.2
+        if self.row_full(11): ToReturn = ToReturn + 3.4
+        if self.row_full(12): ToReturn = ToReturn + 3.6
+        if self.row_full(13): ToReturn = ToReturn + 3.8
+        if self.row_full(14): ToReturn = ToReturn + 4.0
+        if self.row_full(15): ToReturn = ToReturn + 4.2
+        if self.row_full(16): ToReturn = ToReturn + 4.4
+        if self.row_full(17): ToReturn = ToReturn + 4.6
+        if self.row_full(18): ToReturn = ToReturn + 4.8
+        if self.row_full(19): ToReturn = ToReturn + 5.0
 
         return ToReturn
