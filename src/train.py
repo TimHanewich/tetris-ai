@@ -46,7 +46,7 @@ while True:
     for x in range(0, games_in_episode):
 
         # construct the line to write
-        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " (epsilon = " + str(round(epsilon,1)) + ") " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
+        status_line:str = "\r" + "(" + str(games_trained) + " games trained)" + " (epsilon = " + str(round(epsilon,3)) + ") " + "Simulating game # " + str(x+1) + " / " + str(games_in_episode)
         
         # append avg score if there is at least one game yet (can't divide by 0!)
         if len(scores) > 0:
