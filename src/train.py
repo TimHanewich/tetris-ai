@@ -7,9 +7,9 @@ model_save_path = r"" # if you want to start from a checkpoint, fill this in wit
 log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt" # during training, if you want logs to be saved in this file about the progress of performance improvemnts during training, put a path to a txt file here. Logs will be appended.
 
 # settings for training
-games_in_episode:int = 300 # how many games will be played (simulated), with the top X% being used to train
-train_on_best_count:int = 30 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
-training_epochs:int = 20 # the number of epochs those accrued good games are trained on
+games_in_episode:int = 30 # how many games will be played (simulated), with the top X% being used to train
+train_on_best_count:int = 5 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
+training_epochs:int = 10 # the number of epochs those accrued good games are trained on
 save_checkpoint_every_trained:int = 150 # after training each X number of games, a checkpoint will be saved
 
 # epsilon (exploration) settings
