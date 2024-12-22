@@ -12,7 +12,7 @@ while True:
         print("Board:")
         print(str(gs))
 
-        i:str = input("How many shifts? (0-3) > ")
+        i:str = input("How many shifts? > ")
         shifts:int = int(i)
         gs.drop(p, shifts)
 

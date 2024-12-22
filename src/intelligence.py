@@ -22,27 +22,29 @@ class TetrisAI:
         else:
 
             # build input piece portion, followed by some hidden layers
-            input_piece = keras.layers.Input(shape=(4,), name="input_piece")
-            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer1")(input_piece)
-            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer2")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer3")(carry_piece)
-            carry_piece = keras.layers.Dense(16, "relu", name="piece_layer4")(carry_piece)
+            input_piece = keras.layers.Input(shape=(8,), name="input_piece")
+            carry_piece = keras.layers.Dense(32, "relu", name="piece_layer1")(input_piece)
+            carry_piece = keras.layers.Dense(32, "relu", name="piece_layer2")(carry_piece)
+            carry_piece = keras.layers.Dense(32, "relu", name="piece_layer3")(carry_piece)
+            carry_piece = keras.layers.Dense(32, "relu", name="piece_layer4")(carry_piece)
 
             # build input board portion, followed by some layers
-            input_board = keras.layers.Input(shape=(4,), name="input_board")
-            carry_board = keras.layers.Dense(64, "relu", name="board_layer1")(input_board)
-            carry_board = keras.layers.Dense(64, "relu", name="board_layer2")(carry_board)
-            carry_board = keras.layers.Dense(64, "relu", name="board_layer3")(carry_board)
-            carry_board = keras.layers.Dense(64, "relu", name="board_layer4")(carry_board)
+            input_board = keras.layers.Input(shape=(10,), name="input_board")
+            carry_board = keras.layers.Dense(100, "relu", name="board_layer1")(input_board)
+            carry_board = keras.layers.Dense(100, "relu", name="board_layer2")(carry_board)
+            carry_board = keras.layers.Dense(100, "relu", name="board_layer3")(carry_board)
+            carry_board = keras.layers.Dense(100, "relu", name="board_layer4")(carry_board)
 
             # combine the two into one layer, followed by some layers
             combined = keras.layers.concatenate([carry_piece, carry_board], name="combined")
             carry = keras.layers.Dense(256, "relu", name="combined_layer1")(combined)
             carry = keras.layers.Dense(256, "relu", name="combined_layer2")(carry)
-            carry = keras.layers.Dense(128, "relu", name="combined_layer3")(carry)
-            carry = keras.layers.Dense(128, "relu", name="combined_layer4")(carry)
-            carry = keras.layers.Dense(64, "relu", name="combined_layer5")(carry)
-            output = keras.layers.Dense(4, "softmax", name="output")(carry)
+            carry = keras.layers.Dense(256, "relu", name="combined_layer3")(carry)
+            carry = keras.layers.Dense(256, "relu", name="combined_layer4")(carry)
+            carry = keras.layers.Dense(128, "relu", name="combined_layer5")(carry)
+            carry = keras.layers.Dense(128, "relu", name="combined_layer6")(carry)
+            carry = keras.layers.Dense(32, "relu", name="combined_layer7")(carry)
+            output = keras.layers.Dense(9, "softmax", name="output")(carry) # output of 9 potential moves (shift of 0 to shift of 9)
 
             # construct the model
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
@@ -54,10 +56,14 @@ class TetrisAI:
         # handle if we should select random or actually decide what to do using the NN
         if oddsof(epsilon): # if it was determined we should play a random move (explore), play a random move. But play a legal move that does not invalidate the game!
             RandomMoveToReturn:int = 0
-            if p.width == 2: # if the width is 2, that means a shift of 3 would not work (part of the piece would be hanging off the board, an illegal move). So only consider the moves 0, 1, and 2.
-                RandomMoveToReturn:int = random.randint(0, 2)
+            if p.width == 2:
+                RandomMoveToReturn = random.randint(0, 8)
+            elif p.width == 3: # most pieces
+                RandomMoveToReturn = random.randint(0, 7)
+            elif p.width == 4:
+                RandomMoveToReturn = random.randint(0, 6)
             else:
-                RandomMoveToReturn:int = random.randint(0, 3)
+                raise Exception("Potential legal moves not known for piece with width '" + str(p.width) + "'.")
             return RandomMoveToReturn
         else: # if it was not determined we should play a random move, select normally
             inputs_piece:list[int] = representation.PieceState(p)
@@ -114,7 +120,7 @@ def simulate_game(tai:TetrisAI, epsilon:float = 0.0) -> PlayedGame:
         shift:int = tai.choose_move(p, gs, epsilon)
 
         # create the output representation of that move
-        outputs:list[int] = [0,0,0,0]
+        outputs:list[int] = [0,0,0,0,0,0,0,0,0] # array of 9
         outputs[shift] = 1
 
         # log the input/output pair

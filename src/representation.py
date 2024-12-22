@@ -2,13 +2,14 @@ import tetris
 
 def PieceState(p:tetris.Piece) -> list[int]:
     ToReturn:list[int] = []
-
-    # add piece
     ToReturn.append(int(p.squares[0][0]))
-    ToReturn.append(int(p.squares[0][1]))
     ToReturn.append(int(p.squares[1][0]))
+    ToReturn.append(int(p.squares[0][1]))
     ToReturn.append(int(p.squares[1][1]))
-
+    ToReturn.append(int(p.squares[0][2]))
+    ToReturn.append(int(p.squares[1][2]))
+    ToReturn.append(int(p.squares[0][3]))
+    ToReturn.append(int(p.squares[1][3]))
     return ToReturn
     
 
