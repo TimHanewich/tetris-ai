@@ -247,31 +247,46 @@ class GameState:
                 return False
         return True
     
+    def columns_occupied(self, row:int) -> int:
+        """Returns the number of columns occupied in a particular row."""
+        ToReturn:int = 0
+        for col in self.board[row]:
+            if col:
+                ToReturn = ToReturn + 1
+        return ToReturn
+
     def reward(self) -> float:
         """Returns a rough estimate for how successful the game was, considering more than just the score (i.e. also considering density of rows)"""
 
-        ToReturn:float = float(self.score())
+        ToReturn:float = 0.0 # start at 0
 
-        # reward for each row being full, but more for certain rows
-        if self.row_full(0): ToReturn = ToReturn + 1.2
-        if self.row_full(1): ToReturn = ToReturn + 1.4
-        if self.row_full(2): ToReturn = ToReturn + 1.6
-        if self.row_full(3): ToReturn = ToReturn + 1.8
-        if self.row_full(4): ToReturn = ToReturn + 2.0
-        if self.row_full(5): ToReturn = ToReturn + 2.2
-        if self.row_full(6): ToReturn = ToReturn + 2.4
-        if self.row_full(7): ToReturn = ToReturn + 2.6
-        if self.row_full(8): ToReturn = ToReturn + 2.8
-        if self.row_full(9): ToReturn = ToReturn + 3.0
-        if self.row_full(10): ToReturn = ToReturn + 3.2
-        if self.row_full(11): ToReturn = ToReturn + 3.4
-        if self.row_full(12): ToReturn = ToReturn + 3.6
-        if self.row_full(13): ToReturn = ToReturn + 3.8
-        if self.row_full(14): ToReturn = ToReturn + 4.0
-        if self.row_full(15): ToReturn = ToReturn + 4.2
-        if self.row_full(16): ToReturn = ToReturn + 4.4
-        if self.row_full(17): ToReturn = ToReturn + 4.6
-        if self.row_full(18): ToReturn = ToReturn + 4.8
-        if self.row_full(19): ToReturn = ToReturn + 5.0
+        # add values based on the number of columns in each row occupied, but exponentially more the more columns are occupied, so there is an extra incentive for have more columns of each row occupied
+        # note, this is basically just taking the "score" but adding more incentive to reward higher density, so that is why the raw "score" of the game isn't considered... it is kind of considered here.
+        exp:float = 1.25 # this value determines how "severe" the bonus is for having more and more squares occupied on this role (i.e. not just an "add-one" for each additional square, but each incremental square should give MORE reward than the last one did)
+        ToReturn = ToReturn + (self.columns_occupied(19) ** exp) # bottom row
+        ToReturn = ToReturn + (self.columns_occupied(18) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(17) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(16) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(15) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(14) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(13) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(12) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(11) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(10) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(9) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(8) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(7) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(6) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(5) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(4) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(3) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(2) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(1) ** exp)
+        ToReturn = ToReturn + (self.columns_occupied(0) ** exp)
+
+        # add special bonus for each row being full, but more for certain rows
+        for rowi in range(0, len(self.board)):
+            if self.row_full(rowi):
+                ToReturn = ToReturn + 5.0 # award a special bonus if EVERY square is occupied
 
         return ToReturn
