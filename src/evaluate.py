@@ -1,7 +1,7 @@
 import intelligence
 import tetris
 
-save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint0.keras"
+save_path = r""
 tai = intelligence.TetrisAI(save_path)
 
 while True:
