@@ -95,7 +95,6 @@ class Piece:
         elif r == 6:
             self.shape("Z")
 
-
     def __str__(self):
         ToReturn = ""
         ToReturn = " ┌────┐" + "\n"
@@ -113,23 +112,16 @@ class Piece:
         ToReturn = ToReturn + "\n" + "  01"
         return ToReturn
 
-    
-    
-    def columns_occupied(self) -> int:
-        """Checks how many columns the piece is occupying (1 or 2)"""
-        if self.squares[0][1] or self.squares[1][1]:
-            return 2
-        elif self.squares[0][0] or self.squares[1][0]:
-            return 1
-        else:
-            return 0
-
     @property
     def width(self) -> int:
         ToReturn:int = 0
         if self.squares[0][0] or self.squares[1][0]: # if column A has something in it, add one
             ToReturn = ToReturn + 1
         if self.squares[0][1] or self.squares[1][1]: # if column B has something in it, add one
+            ToReturn = ToReturn + 1
+        if self.squares[0][2] or self.squares[1][2]: # if column C has something in it, add one
+            ToReturn = ToReturn + 1
+        if self.squares[0][3] or self.squares[1][3]: # if column D has something in it, add one
             ToReturn = ToReturn + 1
         return ToReturn
 
