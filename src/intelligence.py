@@ -135,7 +135,7 @@ def simulate_game(tai:TetrisAI) -> PlayedGame:
         # if the game is now over, finish
         if gs.over():
             ToReturn.final_reward = gs.reward() # mark down the reward
-            ToReturn.final_score = gs.reward() # mark down the score
+            ToReturn.final_score = gs.score() # mark down the score
             return ToReturn
         
 def oddsof(odds:float) -> bool:
