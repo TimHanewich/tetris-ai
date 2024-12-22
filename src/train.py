@@ -13,12 +13,12 @@ training_epochs:int = 20 # the number of epochs those accrued good games are tra
 save_checkpoint_every_trained:int = 500 # after training each X number of games, a checkpoint will be saved
 
 # epsilon (exploration) settings
-epsilon_initial:float = 0.75 # the initial epsilon value to start at
-epsilon_decay:float = 0.003 # how much to decrease epsilon after each training
+epsilon_initial:float = 0.50 # the initial epsilon value to start at
+epsilon_decay:float = 0.01 # how much to decrease epsilon after each training
 epsilon_min:float = 0.05 # the minimum exploration rate
 ################
 
-# construct/load model
+# construct/load model`
 tai:intelligence.TetrisAI = None
 if model_save_path != None and model_save_path != "":
     print("Loading model checkpoint at '" + model_save_path + "'...")
