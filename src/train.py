@@ -53,7 +53,7 @@ while True:
 
         # simulate and append
         pg = intelligence.simulate_game(tai)
-        scores.append(pg.final_score) # append final score to the ongoing list
+        scores.append(pg.final_reward) # append final score to the ongoing list
         GameSimulations.append(pg) # add this game to the list of games played
     print() # go to next line
 
@@ -63,7 +63,7 @@ while True:
     while len(GameSimulations) > 0:
         best:intelligence.PlayedGame = GameSimulations[0]
         for pg in GameSimulations:
-            if pg.final_score > best.final_score:
+            if pg.final_reward > best.final_reward:
                 best = pg
         GameSimulationsOrdered.append(best)
         GameSimulations.remove(best)
@@ -76,7 +76,7 @@ while True:
     # get avg score of best group
     score:int = 0
     for pg in GamesToTrainOn:
-        score = score + pg.final_score
+        score = score + pg.final_reward
     avg_score_best = score / len(GamesToTrainOn)
     print("Avg. score of " + str(train_on_best_count) + " BEST games from that last batch of " + str(games_in_episode) + ": " + str(round(avg_score_best,1)))
     
