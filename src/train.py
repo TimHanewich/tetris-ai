@@ -14,7 +14,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-collect_experiences:int = 100 # how many moves the model will play (across multiple games) before stopping to train
+collect_experiences:int = 500 # how many moves the model will play (across multiple games) before stopping to train on those moves and their associated reward.
 ################
 
 
@@ -28,15 +28,13 @@ else:
     print("Constructing new model...")
     tai = intelligence.TetrisAI()  
 
-# variables to track
-experiences:list[intelligence.Experience] = []
-GameScores:list[int] = []
-
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
 
-    # collect a certain number of moves
+    # collect a certain number of experiences
+    experiences:list[intelligence.Experience] = []
+    GameScores:list[int] = []
     for i in range(0, collect_experiences):
 
         # prepare status
