@@ -4,6 +4,14 @@ import tetris
 import random
 import representation
 
+class Experience:
+    def __init__(self):
+        self.state:tuple[list[int], list[int]] = None # the "state" the AI has seen. The first list is the state of the piece while the second list is the state of the board.
+        self.action:int = None # the action the AI decided to take (the number of shifts it played).
+        self.reward:float = None # the immediate reward (or we would call it penalty if it is negative) that the game gave to the AI for choosing it's action.
+        self.next_state:tuple[list[int], list[int]] = None # same as the state variable above, but represents the RESULTING state that the AI finds itself in in this game after the action took place. This will be important for determining an estimate for "future rewards"
+        self.done:bool = False # marks if the game is complete or not after this action was taken. This is important becuase, if the game is OVER, there is no need to consider potential future rewards... there won't be any potential future rewards! So just consider the immediate reward and take it!
+
 class TetrisAI:
 
     def __init__(self, save_file_path:str = None):
@@ -40,3 +48,11 @@ class TetrisAI:
     def save(self, path:str) -> None:
         """Saves the keras model to file"""
         self.model.save(path)
+
+    def predict(self, piece:list[int], board:list[int]) -> list[float]:
+        """Performs a forward pass through the neural net to predict the Q-values (current/future rewards) of each potential next move (shift) given the current state, returning as an array of floating point numbers."""
+        x1 = numpy.array([piece])
+        x2 = numpy.array([board])
+        prediction = self.model.predict([x1,x2], verbose=False)
+        vals:list[float] = prediction[0].tolist() # the "tolist()" function just converts it from a numpy.darray to a normal list of floats!
+        return vals
