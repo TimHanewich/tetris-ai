@@ -105,7 +105,6 @@ while True:
 
         # if game is over, reset game!
         if gs.over():
-            print("Game is complete w/ final score of " + str(gs.score()) + "! Resetting.")
             GameScores.append(gs.score())
             gs = tetris.GameState() # new game!
 
