@@ -43,7 +43,7 @@ class TetrisAI:
 
             # construct the model
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
-            self.model.compile("adam", "categorical_crossentropy") # use categorical_crossentropy because this is a classification problem (we are having it select from a set of options)
+            self.model.compile("adam", "mse")
 
     def save(self, path:str) -> None:
         """Saves the keras model to file"""
