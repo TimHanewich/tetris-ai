@@ -28,6 +28,9 @@ else:
     print("Constructing new model...")
     tai = intelligence.TetrisAI()  
 
+# variables to track
+trained_experiences:int = 0 # the number of "experiences" (moves) the model has been trained on
+
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
@@ -110,6 +113,11 @@ while True:
             gs = tetris.GameState() # new game!
     print()
 
+    # log performance to file
+    avg_reward:float = round(sum(rewards) / len(rewards), 1)
+    avg_score:float = round(sum(GameScores) / len(GameScores), 1)
+    tools.log(log_file_path, "Model trained on " + str(trained_experiences) + " experiences: " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves , " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
+
     # train on every experience
     print(str(len(experiences)) + " experiences collected! Time to train.")
     for exp in experiences:
@@ -131,6 +139,7 @@ while True:
 
         # Now, with this new UPDATED qvalues (well, with only 1 changed), train!
         tai.train(exp.state[0], exp.state[1], qvalues)
+        trained_experiences = trained_experiences + 1
     experiences.clear() # dump the memory of experiences now that we trained on all those.
 
     
