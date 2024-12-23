@@ -56,3 +56,10 @@ class TetrisAI:
         prediction = self.model.predict([x1,x2], verbose=False)
         vals:list[float] = prediction[0].tolist() # the "tolist()" function just converts it from a numpy.darray to a normal list of floats!
         return vals
+    
+    def train(self, state_piece:list[int], state_board:list[int], qvalues:list[float]) -> None:
+        """Trains the model on the given 'correct' outputs, or Q-Values. Think of the 'q-values' as the 'correct' outputs for this particular state, where the target reward has been updated given what we learned from a recent experience."""
+        x1 = numpy.array([state_piece])
+        x2 = numpy.array([state_board])
+        y = numpy.array([qvalues])
+        self.model.fit([x1,x2], y, epochs=1)
