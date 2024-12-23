@@ -11,7 +11,7 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 
 # training settings
 gamma:float = 0.5
-epsilon:float = 0.0
+epsilon:float = 0.3
 ################
 
 
