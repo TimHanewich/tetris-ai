@@ -54,6 +54,14 @@ for epoch in range(0, 1000):
     # record the score BEFORE
     score_before:float = gs.score_plus()
 
+    # print
+    print("Piece:")
+    print(str(p))
+    print("Board:")
+    print(str(gs))
+    print("Move: " + str(move))
+    input("Return to continue.")
+
     # play the move
     IllegalMovePlayed:bool = False
     try:
