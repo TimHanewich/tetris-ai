@@ -87,7 +87,7 @@ while True:
         # record score after
         score_after:float = gs.score_plus()
         if IllegalMovePlayed:
-            score_after = 0.0
+            score_after = score_before # basically, the reward will be 0!
 
         # calculate the reward from this action
         reward:float = score_after - score_before
