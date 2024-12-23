@@ -11,6 +11,7 @@ games_in_episode:int = 300 # how many games will be played (simulated), with the
 train_on_best_count:int = 30 # the number of TOP games (games that will be trained on) which will be trained on out of the episode
 training_epochs:int = 30 # the number of epochs those accrued good games are trained on
 save_checkpoint_every_trained:int = 500 # after training each X number of games, a checkpoint will be saved
+training_limit:int = 500 # once the model has been trained on this number of games, program will stop
 
 # epsilon (exploration) settings
 epsilon_initial:float = 0.50 # the initial epsilon value to start at
@@ -35,7 +36,7 @@ games_trained_at_last_checkpoint:int = 0
 
 # train!
 epsilon:float = epsilon_initial
-while True:
+while games_trained < training_limit:
 
     # collect games to train on by playing continuously, over and over
     scores:list[int] = [] # all of the scores that have been played so far in this episode
@@ -105,3 +106,4 @@ while True:
 
     # decrement (decay) epsilon, but don't go below minumum
     epsilon = max(epsilon - epsilon_decay, epsilon_min)
+print("Training limit of " + str(training_limit) + " games reached!")
