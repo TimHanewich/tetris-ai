@@ -4,6 +4,7 @@ import tools
 import tetris
 import representation
 import random
+import time
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -29,6 +30,7 @@ else:
     tai = intelligence.TetrisAI()  
 
 # variables to track
+training_started_at:float = time.time()
 trained_experiences:int = 0 # the number of "experiences" (moves) the model has been trained on
 
 # train!
@@ -116,7 +118,9 @@ while True:
     # log performance to file
     avg_reward:float = round(sum(rewards) / len(rewards), 1)
     avg_score:float = round(sum(GameScores) / len(GameScores), 1)
-    tools.log(log_file_path, "Model trained on " + str(trained_experiences) + " experiences: " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
+    elapsed_seconds:float = time.time() - training_started_at # elapsed time since this training thing started, in seconds
+    h,m,s = tools.convert_seconds(elapsed_seconds)
+    tools.log(log_file_path, str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: " + "model trained on " + str(trained_experiences) + " experiences = " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
 
     # train on every experience
     print(str(len(experiences)) + " experiences collected! Time to train.")
