@@ -35,10 +35,12 @@ while True:
     # collect a certain number of experiences
     experiences:list[intelligence.Experience] = []
     GameScores:list[int] = []
+    rewards:list[float] = [] # list of rewards granted for each move. Can avg. this to get the avg reward in this episode.
     for i in range(0, collect_experiences):
 
         # prepare status
         status:str = "\r"
+        if len(rewards) > 0: status = status + "(" + str(round(sum(rewards) / len(rewards), 1)) + " avg reward over " + str(len(rewards)) + " moves) "
         if len(GameScores) > 0: status = status + "(" + str(round(sum(GameScores) / len(GameScores), 1)) + " avg score over " + str(len(GameScores)) + " games) "
         status = status + "Collecting experience # " + str(i+1) + " / " + str(collect_experiences) + "... "
 
@@ -86,6 +88,7 @@ while True:
 
         # calculate the reward from this action
         reward:float = score_after - score_before
+        rewards.append(reward)
 
         # come up with a random piece that will be used as a dummy "next piece" in the next state.
         # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
