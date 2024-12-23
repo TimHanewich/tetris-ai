@@ -17,6 +17,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
+min_batch_size:int = 500 # training will not happen until the memory reaches at least this size
 train_on_percent_of_experiences_batch:float = 0.10 # what percentage of the experiences will be trained on
 ################
 
@@ -84,6 +85,7 @@ while True:
 
     # calculate the reward from this action
     reward:float = score_after - score_before
+    rewards.append(reward)
 
     # come up with a random piece that will be used as a dummy "next piece" in the next state.
     # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
@@ -111,29 +113,31 @@ while True:
     h,m,s = tools.convert_seconds(elapsed_seconds)
     tools.log(log_file_path, str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: " + "model trained on " + str(trained_experiences) + " experiences = " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
 
-    # select a random subset of the experiences to train on
-    ExperiencesToTrainOnCount:int = int(math.floor(len(experiences) * train_on_percent_of_experiences_batch))
-    ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, ExperiencesToTrainOnCount)
+    if len(experiences) >= min_batch_size:
 
-    # train on the subset of experiences
-    print(str(len(experiences)) + " experiences collected! Time to train on " + str(len(ExperiencesToTrainOn)) + " of them (" + str(round(train_on_percent_of_experiences_batch*100,0)) + "% of them)")
-    for exp in ExperiencesToTrainOn:
+        # select a random subset of the experiences to train on
+        ExperiencesToTrainOnCount:int = int(math.floor(len(experiences) * train_on_percent_of_experiences_batch))
+        ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, ExperiencesToTrainOnCount)
 
-        new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
+        # train on the subset of experiences
+        print(str(len(experiences)) + " experiences collected! Time to train on " + str(len(ExperiencesToTrainOn)) + " of them (" + str(round(train_on_percent_of_experiences_batch*100,0)) + "% of them)")
+        for exp in ExperiencesToTrainOn:
 
-        # determine what new_target is based upon the game ending or not
-        if exp.done: # if game is over
-            new_target = exp.reward
-        else: # game is not done! There is still more game to go. So we should also consider FUTURE rewards as part or our (the NN's) understanding of what rewards this move will reap, now, or into the future.
-            max_q_value_of_next_state = max(tai.predict(exp.next_state[0], exp.next_state[1])) # this is the "best Q value" of the NEXT state. Which will ALSO consider the Q-value of the NEXT STATE. And that goes on and on, like recursively. So really, every Q-value, to an extent (controlled by gamma), is also an estimation of future rewards.
-            new_target = reward + (gamma * max_q_value_of_next_state) # gamma here serves as a slider scale, essentially setting "how important" the future rewards are vs. the current IMMEDIATE reward. i.e. if gamma was 0, it wouldn't consider the future at all, would just focus on the reward it got for THIS move only.
+            new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
 
-        # ask the model to predict again, for this experience's state (let me see the Q-value for each move again)
-        qvalues:list[float] = tai.predict(exp.state[0], exp.state[1])
+            # determine what new_target is based upon the game ending or not
+            if exp.done: # if game is over
+                new_target = exp.reward
+            else: # game is not done! There is still more game to go. So we should also consider FUTURE rewards as part or our (the NN's) understanding of what rewards this move will reap, now, or into the future.
+                max_q_value_of_next_state = max(tai.predict(exp.next_state[0], exp.next_state[1])) # this is the "best Q value" of the NEXT state. Which will ALSO consider the Q-value of the NEXT STATE. And that goes on and on, like recursively. So really, every Q-value, to an extent (controlled by gamma), is also an estimation of future rewards.
+                new_target = reward + (gamma * max_q_value_of_next_state) # gamma here serves as a slider scale, essentially setting "how important" the future rewards are vs. the current IMMEDIATE reward. i.e. if gamma was 0, it wouldn't consider the future at all, would just focus on the reward it got for THIS move only.
 
-        # plug in the target where it belongs
-        qvalues[exp.action] = new_target
+            # ask the model to predict again, for this experience's state (let me see the Q-value for each move again)
+            qvalues:list[float] = tai.predict(exp.state[0], exp.state[1])
 
-        # Now, with this new UPDATED qvalues (well, with only 1 changed), train!
-        tai.train(exp.state[0], exp.state[1], qvalues)
-        trained_experiences = trained_experiences + 1
+            # plug in the target where it belongs
+            qvalues[exp.action] = new_target
+
+            # Now, with this new UPDATED qvalues (well, with only 1 changed), train!
+            tai.train(exp.state[0], exp.state[1], qvalues)
+            trained_experiences = trained_experiences + 1
