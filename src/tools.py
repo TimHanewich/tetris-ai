@@ -8,3 +8,7 @@ def log(path:str, content:str) -> None:
 
 def oddsof(odds:float) -> bool:
     return random.random() < odds
+
+def highest_index(data:list[float]) -> int:
+    """Returns the index of the highest floating point number in the list."""
+    return data.index(max(data))
