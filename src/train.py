@@ -111,20 +111,6 @@ while True:
         GameScores.append(gs.score())
         gs = tetris.GameState() # new game!
 
-    # log performance to file
-    plog:str = "" # the line that will be saved to the file
-    elapsed_seconds:float = time.time() - training_started_at # elapsed time since this training thing started, in seconds
-    h,m,s = tools.convert_seconds(elapsed_seconds)
-    plog = plog + str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: "
-    plog = plog + "model trained on " + str(trained_experiences) + " experiences. "
-    if len(rewards) > 0:
-        avg_reward:float = round(sum(rewards) / len(rewards), 1)
-        plog = plog + str(avg_reward) + " average reward. "
-    if len(GameScores) > 0:
-        avg_score:float = round(sum(GameScores) / len(GameScores), 1)
-        plog = plog + str(avg_score) + " average score. "
-    tools.log(log_file_path, plog)
-
     if len(experiences) >= min_batch_size:
 
         # select a random subset of the experiences to train on
