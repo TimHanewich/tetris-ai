@@ -107,10 +107,10 @@ while True:
         if gs.over():
             GameScores.append(gs.score())
             gs = tetris.GameState() # new game!
-
+    print()
 
     # train on every experience
-    print("Recorded experiences has reached " + str(len(experiences)) + " experiences. Time to train!")
+    print(str(len(experiences)) + " experiences collected! Time to train.")
     for exp in experiences:
 
         new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
@@ -130,8 +130,6 @@ while True:
 
         # Now, with this new UPDATED qvalues (well, with only 1 changed), train!
         tai.train(exp.state[0], exp.state[1], qvalues)
-
-        # dump the memory of experiences
-        experiences.clear()
+    experiences.clear() # dump the memory of experiences now that we trained on all those.
 
     
