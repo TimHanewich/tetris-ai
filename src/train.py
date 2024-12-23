@@ -50,7 +50,6 @@ for epoch in range(0, 1000):
             move = random.randint(0, 8) 
     else:
         move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
-    print("Playing move " + str(move))
 
     # record the score BEFORE
     score_before:float = gs.score_plus()
@@ -72,7 +71,6 @@ for epoch in range(0, 1000):
 
     # calculate the reward from this action
     reward:float = score_after - score_before
-    print("Reward from that move: " + str(reward))
 
     # come up with a random piece that will be used as a dummy "next piece" in the next state.
     # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
