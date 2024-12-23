@@ -25,3 +25,4 @@
 
 ## Notable Commits
 - `d5ca7955af27c2f5c2cd2bb663db6b33981a892f` - last commit before moving from a 4x8 to a 10x20 board and 2x2 to 4x2 pieces (WxH in all of those).
+- `b2e1ad8ddd738a5d5b3951988dc980dee061ae05` - last commit before moving to Q-Learning method.
