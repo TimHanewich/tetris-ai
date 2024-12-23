@@ -11,7 +11,7 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 
 # training settings
 gamma:float = 0.5
-epsilon:float = 0.5
+epsilon:float = 0.0
 ################
 
 
@@ -53,14 +53,6 @@ for epoch in range(0, 1000):
 
     # record the score BEFORE
     score_before:float = gs.score_plus()
-
-    # print
-    print("Piece:")
-    print(str(p))
-    print("Board:")
-    print(str(gs))
-    print("Move: " + str(move))
-    input("Return to continue.")
 
     # play the move
     IllegalMovePlayed:bool = False
