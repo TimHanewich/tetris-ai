@@ -17,8 +17,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-min_batch_size:int = 500 # training will not happen until the memory reaches at least this size
-train_on_percent_of_experiences_batch:float = 0.10 # what percentage of the experiences will be trained on
+batch_size:int = 50 # the number of experiences that will be trained on
 ################
 
 
@@ -58,6 +57,9 @@ while True:
     state_piece:list[int] = representation.PieceState(p)
     state_board:list[int] = representation.BoardState(gs)
 
+    # record the score BEFORE
+    score_before:float = gs.score_plus()
+
     # select what move to play
     move:int
     if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
@@ -69,9 +71,6 @@ while True:
             move = random.randint(0, 8) 
     else:
         move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
-
-    # record the score BEFORE
-    score_before:float = gs.score_plus()
 
     # play the move
     IllegalMovePlayed:bool = False
@@ -90,7 +89,7 @@ while True:
 
     # calculate the reward from this action
     reward:float = score_after - score_before
-    rewards.append(reward)
+    rewards.append(reward) # append to moving average
 
     # come up with a random piece that will be used as a dummy "next piece" in the next state.
     # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
@@ -108,17 +107,16 @@ while True:
 
     # if game is over, reset game!
     if gs.over() or IllegalMovePlayed:
-        GameScores.append(gs.score())
+        GameScores.append(gs.score()) # append to moving average
         gs = tetris.GameState() # new game!
 
-    if len(experiences) >= min_batch_size:
+    if len(experiences) >= batch_size:
 
         # select a random subset of the experiences to train on
-        ExperiencesToTrainOnCount:int = int(math.floor(len(experiences) * train_on_percent_of_experiences_batch))
-        ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, ExperiencesToTrainOnCount)
+        ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, batch_size)
 
         # train on the subset of experiences
-        print(str(len(experiences)) + " experiences collected! Time to train on " + str(len(ExperiencesToTrainOn)) + " of them (" + str(round(train_on_percent_of_experiences_batch*100,0)) + "% of them)")
+        print("Time to train on " + str(batch_size) + " experiences of the " + str(len(experiences)) + " in memory.")
         for exp in ExperiencesToTrainOn:
 
             new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
