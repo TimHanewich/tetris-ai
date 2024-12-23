@@ -3,6 +3,7 @@ import sys
 import tools
 import tetris
 import representation
+import random
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -10,10 +11,11 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 
 # training settings
 gamma:float = 0.5
+epsilon:float = 0.5
 ################
 
 
-# construct/load model`
+# construct/load model
 tai:intelligence.TetrisAI = None
 if model_save_path != None and model_save_path != "":
     print("Loading model checkpoint at '" + model_save_path + "'...")
@@ -37,8 +39,17 @@ for epoch in range(0, 1000):
     state_piece:list[int] = representation.PieceState(p)
     state_board:list[int] = representation.BoardState(gs)
 
-    # predict what move to play
-    move:int = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
+    # select what move to play
+    move:int
+    if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
+        if p.width == 4: # one shape
+            move = random.randint(0, 6)
+        elif p.width == 3: # most scenarios
+            move = random.randint(0, 7)
+        elif p.width == 2: # one shape
+            move = random.randint(0, 8) 
+    else:
+        move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
     print("Playing move " + str(move))
 
     # record the score BEFORE
