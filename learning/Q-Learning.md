@@ -1,7 +1,7 @@
 # Q-Learning 
 
 ## Summarized (in my own words)
-Q Learning Process:
+Q Learning Process (*for all of this, think of the neural network as an estimation of a Q-table, a table of each possible state in the game and then the expected rewards for each action. That is what the NN is intended to be estimating*):
 
 We take the current state and calculate the current "score" of the game. 
 
