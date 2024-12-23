@@ -28,7 +28,7 @@ else:
 # train!
 experiences:list[intelligence.Experience] = []
 gs:tetris.GameState = tetris.GameState()
-for epoch in range(0, 1000):
+for epoch in range(0, 1000000000):
     print("On epoch " + str(epoch) + "... ")
 
     # create new piece that will have to be decided on what move to play
