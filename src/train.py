@@ -5,6 +5,7 @@ import tetris
 import representation
 import random
 import time
+import math
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -16,6 +17,7 @@ epsilon:float = 0.2
 
 # training config
 collect_experiences:int = 500 # how many moves the model will play (across multiple games) before stopping to train on those moves and their associated reward.
+train_on_percent_of_experiences_batch:float = 0.25 # what percentage of the experiences will be trained on
 ################
 
 
@@ -122,9 +124,13 @@ while True:
     h,m,s = tools.convert_seconds(elapsed_seconds)
     tools.log(log_file_path, str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: " + "model trained on " + str(trained_experiences) + " experiences = " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
 
+    # select a random subset of the experiences to train on
+    ExperiencesToTrainOnCount:int = int(math.floor(len(experiences) * train_on_percent_of_experiences_batch))
+    ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, ExperiencesToTrainOnCount)
+
     # train on every experience
-    print(str(len(experiences)) + " experiences collected! Time to train.")
-    for exp in experiences:
+    print(str(len(ExperiencesToTrainOn)) + " experiences collected! Time to train on " + str(len(ExperiencesToTrainOn)) + " of them (" + str(round(train_on_percent_of_experiences_batch*100,0)) + "% of them)")
+    for exp in ExperiencesToTrainOn:
 
         new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
 
