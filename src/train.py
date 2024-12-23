@@ -38,12 +38,17 @@ training_started_at:float = time.time()
 trained_experiences:int = 0 # the number of "experiences" (moves) the model has been trained on
 
 # for reporting purposes only (not required for training)
+onExperience:int = 0
 GameScores = collections.deque(maxlen=200)
 rewards = collections.deque(maxlen=200)
 
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
+
+    # print what experience we are on now
+    onExperience = onExperience + 1
+    print("Collecting experience # " + str(onExperience) + "... ")
 
     # create new piece that will have to be decided on what move to play
     p:tetris.Piece = tetris.Piece()
@@ -107,11 +112,18 @@ while True:
         gs = tetris.GameState() # new game!
 
     # log performance to file
-    avg_reward:float = round(sum(rewards) / len(rewards), 1)
-    avg_score:float = round(sum(GameScores) / len(GameScores), 1)
+    plog:str = "" # the line that will be saved to the file
     elapsed_seconds:float = time.time() - training_started_at # elapsed time since this training thing started, in seconds
     h,m,s = tools.convert_seconds(elapsed_seconds)
-    tools.log(log_file_path, str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: " + "model trained on " + str(trained_experiences) + " experiences = " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
+    plog = plog + str(h) + " hours, " + str(m) + " minutes, " + str(s) + ", seconds: "
+    plog = plog + "model trained on " + str(trained_experiences) + " experiences. "
+    if len(rewards) > 0:
+        avg_reward:float = round(sum(rewards) / len(rewards), 1)
+        plog = plog + str(avg_reward) + " average reward. "
+    if len(GameScores) > 0:
+        avg_score:float = round(sum(GameScores) / len(GameScores), 1)
+        plog = plog + str(avg_score) + " average score. "
+    tools.log(log_file_path, plog)
 
     if len(experiences) >= min_batch_size:
 
