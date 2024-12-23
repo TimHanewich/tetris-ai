@@ -87,7 +87,7 @@ while True:
         # record score after
         score_after:float = gs.score_plus()
         if IllegalMovePlayed:
-            score_after = score_before # basically, the reward will be 0!
+            score_after = score_before # No reward if an illegal move is played
 
         # calculate the reward from this action
         reward:float = score_after - score_before
@@ -104,11 +104,11 @@ while True:
         exp.action = move
         exp.reward = reward
         exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs))
-        exp.done = gs.over()
+        exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
         experiences.append(exp)
 
         # if game is over, reset game!
-        if gs.over():
+        if gs.over() or IllegalMovePlayed:
             GameScores.append(gs.score())
             gs = tetris.GameState() # new game!
     print()
