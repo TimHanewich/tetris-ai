@@ -6,6 +6,7 @@ import representation
 import random
 import time
 import math
+import collections
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -16,7 +17,6 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-collect_experiences:int = 500 # how many moves the model will play (across multiple games) before stopping to train on those moves and their associated reward.
 train_on_percent_of_experiences_batch:float = 0.10 # what percentage of the experiences will be trained on
 ################
 
@@ -32,90 +32,77 @@ else:
     tai = intelligence.TetrisAI()  
 
 # variables to track
+experiences = collections.deque(maxlen=2000)
 training_started_at:float = time.time()
 trained_experiences:int = 0 # the number of "experiences" (moves) the model has been trained on
+
+# for reporting purposes only (not required for training)
+GameScores = collections.deque(maxlen=200)
+rewards = collections.deque(maxlen=200)
 
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
 
-    # collect a certain number of experiences
-    experiences:list[intelligence.Experience] = []
-    GameScores:list[int] = []
-    rewards:list[float] = [] # list of rewards granted for each move. Can avg. this to get the avg reward in this episode.
-    for i in range(0, collect_experiences):
+    # create new piece that will have to be decided on what move to play
+    p:tetris.Piece = tetris.Piece()
+    p.randomize()
 
-        # prepare status
-        status:str = "\r" + "Model trained on " + str(trained_experiences) + " experiences: "
-        if len(rewards) > 0: status = status + "(" + str(round(sum(rewards) / len(rewards), 1)) + " avg reward over " + str(len(rewards)) + " moves) "
-        if len(GameScores) > 0: status = status + "(" + str(round(sum(GameScores) / len(GameScores), 1)) + " avg score over " + str(len(GameScores)) + " games) "
-        status = status + "Collecting experience # " + str(i+1) + " / " + str(collect_experiences) + "... "
+    # prepare the piece and board as a representation (state) that could be passed to the model
+    state_piece:list[int] = representation.PieceState(p)
+    state_board:list[int] = representation.BoardState(gs)
 
-        # print
-        sys.stdout.write(status)
-        sys.stdout.flush()
+    # select what move to play
+    move:int
+    if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
+        if p.width == 4: # one shape
+            move = random.randint(0, 6)
+        elif p.width == 3: # most scenarios
+            move = random.randint(0, 7)
+        elif p.width == 2: # one shape
+            move = random.randint(0, 8) 
+    else:
+        move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
 
-        # create new piece that will have to be decided on what move to play
-        p:tetris.Piece = tetris.Piece()
-        p.randomize()
+    # record the score BEFORE
+    score_before:float = gs.score_plus()
 
-        # prepare the piece and board as a representation (state) that could be passed to the model
-        state_piece:list[int] = representation.PieceState(p)
-        state_board:list[int] = representation.BoardState(gs)
+    # play the move
+    IllegalMovePlayed:bool = False
+    try:
+        gs.drop(p, move)
+    except tetris.InvalidShiftException as ex: # the model tried to play an illegal move
+        IllegalMovePlayed = True
+    except Exception as ex:
+        print("Unhandled exception in move execution: " + str(ex))
+        input("Press enter key to continue, if you want to.")
 
-        # select what move to play
-        move:int
-        if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
-            if p.width == 4: # one shape
-                move = random.randint(0, 6)
-            elif p.width == 3: # most scenarios
-                move = random.randint(0, 7)
-            elif p.width == 2: # one shape
-                move = random.randint(0, 8) 
-        else:
-            move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
+    # record score after
+    score_after:float = gs.score_plus()
+    if IllegalMovePlayed:
+        score_after = score_before # No reward if an illegal move is played
 
-        # record the score BEFORE
-        score_before:float = gs.score_plus()
+    # calculate the reward from this action
+    reward:float = score_after - score_before
 
-        # play the move
-        IllegalMovePlayed:bool = False
-        try:
-            gs.drop(p, move)
-        except tetris.InvalidShiftException as ex: # the model tried to play an illegal move
-            IllegalMovePlayed = True
-        except Exception as ex:
-            print("Unhandled exception in move execution: " + str(ex))
-            input("Press enter key to continue, if you want to.")
+    # come up with a random piece that will be used as a dummy "next piece" in the next state.
+    # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
+    next_piece:tetris.Piece = tetris.Piece()
+    next_piece.randomize()
 
-        # record score after
-        score_after:float = gs.score_plus()
-        if IllegalMovePlayed:
-            score_after = score_before # No reward if an illegal move is played
+    # store this scenario as an experience
+    exp:intelligence.Experience = intelligence.Experience()
+    exp.state = (state_piece, state_board)
+    exp.action = move
+    exp.reward = reward
+    exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs)) # technically, if the game is over, this isn't even needed. It won't even be considered!
+    exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
+    experiences.append(exp)
 
-        # calculate the reward from this action
-        reward:float = score_after - score_before
-        rewards.append(reward)
-
-        # come up with a random piece that will be used as a dummy "next piece" in the next state.
-        # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
-        next_piece:tetris.Piece = tetris.Piece()
-        next_piece.randomize()
-
-        # store this scenario as an experience
-        exp:intelligence.Experience = intelligence.Experience()
-        exp.state = (state_piece, state_board)
-        exp.action = move
-        exp.reward = reward
-        exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs)) # technically, if the game is over, this isn't even needed. It won't even be considered!
-        exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
-        experiences.append(exp)
-
-        # if game is over, reset game!
-        if gs.over() or IllegalMovePlayed:
-            GameScores.append(gs.score())
-            gs = tetris.GameState() # new game!
-    print()
+    # if game is over, reset game!
+    if gs.over() or IllegalMovePlayed:
+        GameScores.append(gs.score())
+        gs = tetris.GameState() # new game!
 
     # log performance to file
     avg_reward:float = round(sum(rewards) / len(rewards), 1)
@@ -128,7 +115,7 @@ while True:
     ExperiencesToTrainOnCount:int = int(math.floor(len(experiences) * train_on_percent_of_experiences_batch))
     ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, ExperiencesToTrainOnCount)
 
-    # train on every experience
+    # train on the subset of experiences
     print(str(len(experiences)) + " experiences collected! Time to train on " + str(len(ExperiencesToTrainOn)) + " of them (" + str(round(train_on_percent_of_experiences_batch*100,0)) + "% of them)")
     for exp in ExperiencesToTrainOn:
 
@@ -150,6 +137,3 @@ while True:
         # Now, with this new UPDATED qvalues (well, with only 1 changed), train!
         tai.train(exp.state[0], exp.state[1], qvalues)
         trained_experiences = trained_experiences + 1
-    experiences.clear() # dump the memory of experiences now that we trained on all those.
-
-    
