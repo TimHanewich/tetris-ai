@@ -138,6 +138,3 @@ def simulate_game(tai:TetrisAI, epsilon:float = 0.0) -> PlayedGame:
             ToReturn.final_reward = gs.reward() # mark down the reward
             ToReturn.final_score = gs.score() # mark down the score
             return ToReturn
-        
-def oddsof(odds:float) -> bool:
-    return random.random() < odds
