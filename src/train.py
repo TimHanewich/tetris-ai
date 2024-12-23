@@ -17,7 +17,7 @@ epsilon:float = 0.2
 
 # training config
 collect_experiences:int = 500 # how many moves the model will play (across multiple games) before stopping to train on those moves and their associated reward.
-train_on_percent_of_experiences_batch:float = 0.25 # what percentage of the experiences will be trained on
+train_on_percent_of_experiences_batch:float = 0.10 # what percentage of the experiences will be trained on
 ################
 
 
