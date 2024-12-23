@@ -42,7 +42,7 @@ while True:
     for i in range(0, collect_experiences):
 
         # prepare status
-        status:str = "\r"
+        status:str = "\r" + "Model trained on " + str(trained_experiences) + " experiences: "
         if len(rewards) > 0: status = status + "(" + str(round(sum(rewards) / len(rewards), 1)) + " avg reward over " + str(len(rewards)) + " moves) "
         if len(GameScores) > 0: status = status + "(" + str(round(sum(GameScores) / len(GameScores), 1)) + " avg score over " + str(len(GameScores)) + " games) "
         status = status + "Collecting experience # " + str(i+1) + " / " + str(collect_experiences) + "... "
@@ -103,7 +103,7 @@ while True:
         exp.state = (state_piece, state_board)
         exp.action = move
         exp.reward = reward
-        exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs))
+        exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs)) # technically, if the game is over, this isn't even needed. It won't even be considered!
         exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
         experiences.append(exp)
 
