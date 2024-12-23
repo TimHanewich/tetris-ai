@@ -116,7 +116,7 @@ while True:
     # log performance to file
     avg_reward:float = round(sum(rewards) / len(rewards), 1)
     avg_score:float = round(sum(GameScores) / len(GameScores), 1)
-    tools.log(log_file_path, "Model trained on " + str(trained_experiences) + " experiences: " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves , " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
+    tools.log(log_file_path, "Model trained on " + str(trained_experiences) + " experiences: " + str(avg_reward) + " avg reward over " + str(len(rewards)) + " moves, " + str(avg_score) + " avg score over " + str(len(GameScores)) + " games.")
 
     # train on every experience
     print(str(len(experiences)) + " experiences collected! Time to train.")
