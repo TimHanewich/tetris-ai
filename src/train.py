@@ -40,7 +40,7 @@ while True:
     for i in range(0, collect_experiences):
 
         # prepare status
-        status:str = ""
+        status:str = "\r"
         if len(GameScores) > 0: status = status + "(" + str(round(sum(GameScores) / len(GameScores), 1)) + " avg score over " + str(len(GameScores)) + " games) "
         status = status + "Collecting experience # " + str(i+1) + " / " + str(collect_experiences) + "... "
 
