@@ -39,7 +39,7 @@ class TetrisAI:
             carry = keras.layers.Dense(80, "relu", name="combined_layer2")(carry)
             carry = keras.layers.Dense(50, "relu", name="combined_layer3")(carry)
             carry = keras.layers.Dense(30, "relu", name="combined_layer4")(carry)
-            output = keras.layers.Dense(9, "softmax", name="output")(carry) # output of 9 potential moves (shift of 0 to shift of 9)
+            output = keras.layers.Dense(9, "linear", name="output")(carry) # output of 9 potential moves (shift of 0 to shift of 9)
 
             # construct the model
             self.model = keras.Model(inputs=[input_piece, input_board], outputs=output)
