@@ -103,6 +103,12 @@ while True:
         exp.done = gs.over()
         experiences.append(exp)
 
+        # if game is over, reset game!
+        if gs.over():
+            print("Game is complete w/ final score of " + str(gs.score()) + "! Resetting.")
+            GameScores.append(gs.score())
+            gs = tetris.GameState() # new game!
+
 
     # train on every experience
     print("Recorded experiences has reached " + str(len(experiences)) + " experiences. Time to train!")
@@ -129,8 +135,4 @@ while True:
         # dump the memory of experiences
         experiences.clear()
 
-    # if game is over, reset game!
-    if gs.over():
-        print("Game is complete w/ final score of " + str(gs.score()) + "! Resetting.")
-        GameScores.append(gs.score())
-        gs = tetris.GameState() # new game!
+    
