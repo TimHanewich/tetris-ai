@@ -45,82 +45,85 @@ rewards = collections.deque(maxlen=200) # rolling 200 reward scores
 gs:tetris.GameState = tetris.GameState()
 while True:
 
-    # print a status
-    onExperience = onExperience + 1
-    statuses:list[str] = []
-    statuses.append("Trained experiences: " + str(trained_experiences))
-    if len(rewards) > 0:
-        statuses.append("Avg. Reward: " + str(round(sum(rewards) / len(rewards), 1)))
-    if len(GameScores) > 0:
-        statuses.append("Avg. Score: " + str(round(sum(GameScores) / len(GameScores), 1)))
-    statuses.append("Collecting Experience # " + str(onExperience))
-    status:str = ""
-    for s in statuses:
-        status = status + s + " | "
-    status = status[0:-3]
-    sys.stdout.write("\r" + status)
-    sys.stdout.flush()
+    # add a certain amount of experiences
+    for _ in range(0, 300):
 
-    # create new piece that will have to be decided on what move to play
-    p:tetris.Piece = tetris.Piece()
-    p.randomize()
+        # print a status
+        onExperience = onExperience + 1
+        statuses:list[str] = []
+        statuses.append("Trained experiences: " + str(trained_experiences))
+        if len(rewards) > 0:
+            statuses.append("Avg. Reward: " + str(round(sum(rewards) / len(rewards), 1)))
+        if len(GameScores) > 0:
+            statuses.append("Avg. Score: " + str(round(sum(GameScores) / len(GameScores), 1)))
+        statuses.append("Collecting Experience # " + str(onExperience))
+        status:str = ""
+        for s in statuses:
+            status = status + s + " | "
+        status = status[0:-3]
+        sys.stdout.write("\r" + status)
+        sys.stdout.flush()
 
-    # prepare the piece and board as a representation (state) that could be passed to the model
-    state_piece:list[int] = representation.PieceState(p)
-    state_board:list[int] = representation.BoardState(gs)
+        # create new piece that will have to be decided on what move to play
+        p:tetris.Piece = tetris.Piece()
+        p.randomize()
 
-    # record the score BEFORE
-    score_before:float = gs.score_plus()
+        # prepare the piece and board as a representation (state) that could be passed to the model
+        state_piece:list[int] = representation.PieceState(p)
+        state_board:list[int] = representation.BoardState(gs)
 
-    # select what move to play
-    move:int
-    if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
-        if p.width == 4: # one shape
-            move = random.randint(0, 6)
-        elif p.width == 3: # most scenarios
-            move = random.randint(0, 7)
-        elif p.width == 2: # one shape
-            move = random.randint(0, 8) 
-    else:
-        move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
+        # record the score BEFORE
+        score_before:float = gs.score_plus()
 
-    # play the move
-    IllegalMovePlayed:bool = False
-    try:
-        gs.drop(p, move)
-    except tetris.InvalidShiftException as ex: # the model tried to play an illegal move
-        IllegalMovePlayed = True
-    except Exception as ex:
-        print("Unhandled exception in move execution: " + str(ex))
-        input("Press enter key to continue, if you want to.")
+        # select what move to play
+        move:int
+        if tools.oddsof(epsilon): # if, by chance (chance determined by epsilon as part of e-greedy), select a random move
+            if p.width == 4: # one shape
+                move = random.randint(0, 6)
+            elif p.width == 3: # most scenarios
+                move = random.randint(0, 7)
+            elif p.width == 2: # one shape
+                move = random.randint(0, 8) 
+        else:
+            move = tools.highest_index(tai.predict(state_piece, state_board)) # select the index of the highest value (highest perceived reward) out of the whole prediction of Q-Values.
 
-    # record score after
-    score_after:float = gs.score_plus()
-    if IllegalMovePlayed:
-        score_after = score_before # No reward if an illegal move is played
+        # play the move
+        IllegalMovePlayed:bool = False
+        try:
+            gs.drop(p, move)
+        except tetris.InvalidShiftException as ex: # the model tried to play an illegal move
+            IllegalMovePlayed = True
+        except Exception as ex:
+            print("Unhandled exception in move execution: " + str(ex))
+            input("Press enter key to continue, if you want to.")
 
-    # calculate the reward from this action
-    reward:float = score_after - score_before
-    rewards.append(reward) # append to moving average
+        # record score after
+        score_after:float = gs.score_plus()
+        if IllegalMovePlayed:
+            score_after = score_before # No reward if an illegal move is played
 
-    # come up with a random piece that will be used as a dummy "next piece" in the next state.
-    # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
-    next_piece:tetris.Piece = tetris.Piece()
-    next_piece.randomize()
+        # calculate the reward from this action
+        reward:float = score_after - score_before
+        rewards.append(reward) # append to moving average
 
-    # store this scenario as an experience
-    exp:intelligence.Experience = intelligence.Experience()
-    exp.state = (state_piece, state_board)
-    exp.action = move
-    exp.reward = reward
-    exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs)) # technically, if the game is over, this isn't even needed. It won't even be considered!
-    exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
-    experiences.append(exp)
+        # come up with a random piece that will be used as a dummy "next piece" in the next state.
+        # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
+        next_piece:tetris.Piece = tetris.Piece()
+        next_piece.randomize()
 
-    # if game is over, reset game!
-    if gs.over() or IllegalMovePlayed:
-        GameScores.append(gs.score()) # append to moving average
-        gs = tetris.GameState() # new game!
+        # store this scenario as an experience
+        exp:intelligence.Experience = intelligence.Experience()
+        exp.state = (state_piece, state_board)
+        exp.action = move
+        exp.reward = reward
+        exp.next_state = (representation.PieceState(next_piece), representation.BoardState(gs)) # technically, if the game is over, this isn't even needed. It won't even be considered!
+        exp.done = gs.over() or IllegalMovePlayed # if the game is over or IllegalMovePlayed... if either of those are true, mark as game over!
+        experiences.append(exp)
+
+        # if game is over, reset game!
+        if gs.over() or IllegalMovePlayed:
+            GameScores.append(gs.score()) # append to moving average
+            gs = tetris.GameState() # new game!
 
     if len(experiences) >= batch_size:
         print() # go to the next line, breaking the line of the status above.
