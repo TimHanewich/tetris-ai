@@ -69,7 +69,7 @@ while True:
 
         # create new piece that will have to be decided on what move to play
         p:tetris.Piece = tetris.Piece()
-        p.randomize()
+        p.shape("O")
 
         # prepare the piece and board as a representation (state) that could be passed to the model
         state_piece:list[int] = representation.PieceState(p)
