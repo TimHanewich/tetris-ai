@@ -16,7 +16,7 @@ def PieceState(p:tetris.Piece) -> list[int]:
 def BoardState(gs:tetris.GameState) -> list[int]:
     """Returns the state of the board, expressed as """
     ToReturn:list[int] = []
-    for r in len(gs.board):
-        for c in len(gs.board[0]):
+    for r in range(0, len(gs.board)):
+        for c in range(0, len(gs.board[0])):
             ToReturn.append(int(gs.board[r][c]))
     return ToReturn
