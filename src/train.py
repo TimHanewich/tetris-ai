@@ -112,7 +112,7 @@ while True:
         # come up with a random piece that will be used as a dummy "next piece" in the next state.
         # since the piece generation is always random, it doesnt matter that the next piece is ACTUALLY the next piece.
         next_piece:tetris.Piece = tetris.Piece()
-        next_piece.randomize()
+        next_piece.shape("O")
 
         # store this scenario as an experience
         exp:intelligence.Experience = intelligence.Experience()
