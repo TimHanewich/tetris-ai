@@ -17,7 +17,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-batch_size:int = 32 # the number of experiences that will be trained on
+batch_size:int = 64 # the number of experiences that will be trained on
 ################
 
 
@@ -58,7 +58,8 @@ while True:
     for s in statuses:
         status = status + s + " | "
     status = status[0:-3]
-    print(status)
+    sys.stdout.write("\r" + status)
+    sys.stdout.flush()
 
     # create new piece that will have to be decided on what move to play
     p:tetris.Piece = tetris.Piece()
@@ -122,12 +123,13 @@ while True:
         gs = tetris.GameState() # new game!
 
     if len(experiences) >= batch_size:
+        print() # go to the next line, breaking the line of the status above.
 
         # select a random subset of the experiences to train on
         ExperiencesToTrainOn:list[intelligence.Experience] = random.sample(experiences, batch_size)
 
         # train on the subset of experiences
-        print("Time to train on " + str(batch_size) + " experiences of the " + str(len(experiences)) + " in memory.")
+        print("Now training on " + str(batch_size) + " experiences of the " + str(len(experiences)) + " in memory.")
         for exp in ExperiencesToTrainOn:
 
             new_target:float # "new_target" is essentially the 'correct' Q-Value that we want the Neural Network to learn for that particular state and action it did. In other words, we are going to set this to the updated current/future reward blend, plug this value into the prediction array, and then train on it.
