@@ -17,7 +17,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-batch_size:int = 50 # the number of experiences that will be trained on
+batch_size:int = 32 # the number of experiences that will be trained on
 ################
 
 
@@ -38,16 +38,27 @@ trained_experiences:int = 0 # the number of "experiences" (moves) the model has 
 
 # for reporting purposes only (not required for training)
 onExperience:int = 0
-GameScores = collections.deque(maxlen=200)
-rewards = collections.deque(maxlen=200)
+GameScores = collections.deque(maxlen=200) # rolling 200 game scores
+rewards = collections.deque(maxlen=200) # rolling 200 reward scores
 
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
 
-    # print what experience we are on now
+    # print a status
     onExperience = onExperience + 1
-    print("Collecting experience # " + str(onExperience) + "... ")
+    statuses:list[str] = []
+    statuses.append("Trained experiences: " + str(trained_experiences))
+    if len(rewards) > 0:
+        statuses.append("Avg. Reward: " + str(round(sum(rewards) / len(rewards), 1)))
+    if len(GameScores) > 0:
+        statuses.append("Avg. Score: " + str(round(sum(GameScores) / len(GameScores), 1)))
+    statuses.append("Collecting Experience # " + str(onExperience))
+    status:str = ""
+    for s in statuses:
+        status = status + s + " | "
+    status = status[0:-3]
+    print(status)
 
     # create new piece that will have to be decided on what move to play
     p:tetris.Piece = tetris.Piece()
