@@ -14,14 +14,9 @@ def PieceState(p:tetris.Piece) -> list[int]:
     
 
 def BoardState(gs:tetris.GameState) -> list[int]:
-    """Returns the relative available depth of the board."""
-
-    columns_depth:list[int] = gs.column_depths()
-
-    # subtract 1 from each until one is 0
-    # doing this allows for the depth to be "relative"
-    while 0 not in columns_depth:
-        for i in range(0, len(columns_depth)):
-            columns_depth[i] = columns_depth[i] - 1
-    
-    return columns_depth
+    """Returns the state of the board, expressed as """
+    ToReturn:list[int] = []
+    for r in len(gs.board):
+        for c in len(gs.board[0]):
+            ToReturn.append(int(gs.board[r][c]))
+    return ToReturn
