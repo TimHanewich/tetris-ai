@@ -149,7 +149,7 @@ while True:
                 new_target = exp.reward
             else: # game is not done! There is still more game to go. So we should also consider FUTURE rewards as part or our (the NN's) understanding of what rewards this move will reap, now, or into the future.
                 max_q_value_of_next_state = max(tai.predict(exp.next_state[0], exp.next_state[1])) # this is the "best Q value" of the NEXT state. Which will ALSO consider the Q-value of the NEXT STATE. And that goes on and on, like recursively. So really, every Q-value, to an extent (controlled by gamma), is also an estimation of future rewards.
-                new_target = reward + (gamma * max_q_value_of_next_state) # gamma here serves as a slider scale, essentially setting "how important" the future rewards are vs. the current IMMEDIATE reward. i.e. if gamma was 0, it wouldn't consider the future at all, would just focus on the reward it got for THIS move only.
+                new_target = exp.reward + (gamma * max_q_value_of_next_state) # gamma here serves as a slider scale, essentially setting "how important" the future rewards are vs. the current IMMEDIATE reward. i.e. if gamma was 0, it wouldn't consider the future at all, would just focus on the reward it got for THIS move only.
 
             # ask the model to predict again, for this experience's state (let me see the Q-value for each move again)
             qvalues:list[float] = tai.predict(exp.state[0], exp.state[1])
