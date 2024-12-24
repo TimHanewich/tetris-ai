@@ -62,4 +62,4 @@ class TetrisAI:
         x1 = numpy.array([state_piece])
         x2 = numpy.array([state_board])
         y = numpy.array([qvalues])
-        self.model.fit([x1,x2], y, epochs=1)
+        self.model.fit([x1,x2], y, epochs=1, verbose=0)
