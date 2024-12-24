@@ -44,6 +44,9 @@ rewards = collections.deque(maxlen=200) # rolling 200 reward scores
 # train!
 gs:tetris.GameState = tetris.GameState()
 while True:
+    
+    # outside "common" variable shared at the experience generation (move) level and outside
+    status:str = ""
 
     # add a certain amount of experiences
     for _ in range(0, 300):
@@ -57,7 +60,7 @@ while True:
         if len(GameScores) > 0:
             statuses.append("Avg. Score: " + str(round(sum(GameScores) / len(GameScores), 1)))
         statuses.append("Collecting Experience # " + str(onExperience))
-        status:str = ""
+        status = ""
         for s in statuses:
             status = status + s + " | "
         status = status[0:-3]
@@ -125,6 +128,10 @@ while True:
             GameScores.append(gs.score()) # append to moving average
             gs = tetris.GameState() # new game!
 
+    # log to file
+    tools.log(log_file_path, status)
+
+    # train
     if len(experiences) >= batch_size:
         print() # go to the next line, breaking the line of the status above.
 
