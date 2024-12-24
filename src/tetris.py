@@ -1,4 +1,5 @@
 import random
+import statistics
 
 
 class Piece:
@@ -288,5 +289,9 @@ class GameState:
         for rowi in range(0, len(self.board)):
             if self.row_full(rowi):
                 ToReturn = ToReturn + 5.0 # award a special bonus if EVERY square is occupied
+
+        # add penalty for the column depth having a very high standard deviation
+        depth_std_dev = statistics.pstdev(self.column_depths())
+        ToReturn = ToReturn - (depth_std_dev * 5)
 
         return ToReturn
