@@ -104,7 +104,7 @@ while True:
         exp = experiences[ei]
 
         # print
-        sys.stdout.write("\r", "Training on experience " + str(ei+1) + " / " + str(len(experiences)) + "... ")
+        sys.stdout.write("\r", + "Training on experience " + str(ei+1) + " / " + str(len(experiences)) + "... ")
         sys.stdout.flush()
 
         # determine new target based on the game ending or not
