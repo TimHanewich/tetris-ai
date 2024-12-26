@@ -34,7 +34,8 @@ while True:
 
     # collect X number of experiences
     gs = tetris.GameState()
-    experiences:list[intelligence.Experience] = []
+    experiences:list[intelligence.Experience] = [] # collection off all the experiences
+    GameScores:list[int] = [] # all of the scores of the finished games
     for ei in range(0, batch_size):
 
         # print
@@ -90,6 +91,7 @@ while True:
         # if the game is over or an illegal move was played, reset
         if gs.over() or IllegalMovePlayed:
             gs = tetris.GameState() # new game!
+            GameScores.append(gs.score())
     print("experience collection complete!")
 
     # print average rewards
@@ -98,6 +100,9 @@ while True:
         rewards = rewards + exp.reward
     status:str = "Average reward over those " + str(len(experiences)) + " on model w/ " + str(experiences_trained) + " trained experiences: " + str(round(rewards / len(experiences), 2))
     print(status)
+
+    # print average game score over the games played in those last experiences
+    print("Avg score over " + str(len(GameScores)) + " games played over those last " + str(len(experiences)) + " experiences: " + str(round(sum(GameScores) / len(GameScores), 1)))
 
     # train!
     for ei in range(0, len(experiences)):
