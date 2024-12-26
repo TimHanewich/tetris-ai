@@ -268,7 +268,8 @@ class GameState:
     def score_plus(self) -> float:
         """Returns a rough estimate for how successful the game was, considering more than just the score (i.e. also considering density of rows). You can look at this as an alternative way of scoring the game other than just counting the number of occupied squares on the board. This method awards bonuses for row occupation and other stuff."""
 
-        ToReturn:float = 0.0 # start at 0
+        # start at score
+        ToReturn:float = float(self.score())
 
         # add penalty for the column depth having a very high standard deviation
         depth_std_dev = statistics.pstdev(self.column_depths())
