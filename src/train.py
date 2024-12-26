@@ -15,6 +15,7 @@ epsilon:float = 0.2
 
 # training config
 batch_size:int = 300 # the number of experiences that will be collected before training starts
+save_model_every_experiences:int = 5000 # how many experiences must be trained before a new model checkpoint is saved
 ################
 
 # construct/load model
@@ -29,6 +30,8 @@ else:
 
 # variables to track
 experiences_trained:int = 0 # the number of experiences the model has been trained at at any given point
+model_last_saved_at_experiences_trained:int = 0 # the last number of experiences the model was trained on when the last checkpoint was saved
+on_checkpoint:int = 0
 
 # training loop!
 while True:
@@ -132,3 +135,12 @@ while True:
         tai.train(exp.state[0], exp.state[1], qvalues)
         experiences_trained = experiences_trained + 1
     print("training complete!")
+
+    # save model checkpoint
+    if (experiences_trained - model_last_saved_at_experiences_trained) >= save_model_every_experiences:
+        print("Time to save model!")
+        path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint" + str(on_checkpoint) + ".keras"
+        tai.save(path)
+        print("Checkpoint # " + str(on_checkpoint) + " saved to " + path + "!")
+        on_checkpoint = on_checkpoint + 1
+        model_last_saved_at_experiences_trained = experiences_trained
