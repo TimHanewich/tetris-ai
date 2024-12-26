@@ -3,6 +3,7 @@ import tetris
 import representation
 import random
 import sys
+import tools
 
 ### SETTINGS ###
 model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
@@ -94,15 +95,15 @@ while True:
             gs = tetris.GameState() # new game!
     print("experience collection complete!")
 
-    # print average rewards
+    # calculate average rewards over that group of experiences
     rewards:float = 0.0
     for exp in experiences:
         rewards = rewards + exp.reward
-    status:str = "Average reward over those " + str(len(experiences)) + " on model w/ " + str(experiences_trained) + " trained experiences: " + str(round(rewards / len(experiences), 2))
-    print(status)
 
-    # print average game score over the games played in those last experiences
-    print("Average score over " + str(len(GameScores)) + " games played over those last " + str(len(experiences)) + " experiences: " + str(round(sum(GameScores) / len(GameScores), 1)))
+    # print the progress!
+    status:str = "Model @ " + str(experiences_trained) + " experiences trained over " + str(len(experiences)) + " experiences: " + str(round(sum(rewards) / len(rewards), 1)) + " avg. reward, " + str(round(sum(GameScores) / len(GameScores), 1)) + " avg. score over " + str(len(GameScores)) + " games played."
+    tools.log(log_file_path, status)
+    print(status)
 
     # train!
     for ei in range(0, len(experiences)):
