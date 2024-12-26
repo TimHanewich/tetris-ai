@@ -105,7 +105,7 @@ while True:
     avg_reward = rewards / len(experiences)
 
     # print the progress!
-    status:str = str(len(experiences)) + " experiences by model trained on " + str(experiences_trained) + ": " + str(round(avg_reward, 1)) + " avg. reward, " + str(round(sum(GameScores) / len(GameScores), 1)) + " avg. score over " + str(len(GameScores)) + " games played."
+    status:str = "Last " + str(len(experiences)) + " experiences by model trained on " + str(experiences_trained) + " experiences: " + str(round(avg_reward, 1)) + " avg. reward, " + str(round(sum(GameScores) / len(GameScores), 1)) + " avg. score over " + str(len(GameScores)) + " games played."
     tools.log(log_file_path, status)
     print(status)
 
