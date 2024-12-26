@@ -43,6 +43,7 @@ while True:
 
         # generate piece
         p = tetris.Piece()
+        p.randomize()
 
         # get piece & board representation
         repr_piece:list[int] = representation.PieceState(p)
