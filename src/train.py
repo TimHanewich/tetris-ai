@@ -85,6 +85,7 @@ while True:
         exp.reward = MoveReward # the reward that was given from that move
         exp.next_state = (representation.PieceState(np), representation.BoardState(gs)) # the next state
         exp.done = gs.over() or IllegalMovePlayed # if the game is completed or terminated via it finishing or an illegal move being played
+        experiences.append(exp)
 
         # if the game is over or an illegal move was played, reset
         if gs.over() or IllegalMovePlayed:
