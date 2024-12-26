@@ -178,7 +178,7 @@ class GameState:
         return column_depths
     
     def drop(self, p:Piece, shift:int) -> None:
-        """Drops a piece into the board, shifting it horizontally a number of columns."""
+        """Drops a piece into the board, shifting it horizontally a number of columns, and then returns the reward for that move."""
         
         # ensure shift is within bounds
         if shift < 0 or shift > 8: # the shift will NEVER be more than 8. Because the smallest piece is 2-wide, which would be a shift of 8
@@ -211,6 +211,9 @@ class GameState:
         if drop_depth == 0:
             raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
         
+        # record reward before
+        reward_before:float = self.score_plus()
+        
         # drop by "copying in the values"
         for row_index in range(0, len(p.squares)):
             for col_index in range(0, len(p.squares[row_index])):
@@ -224,6 +227,12 @@ class GameState:
                         subtractor = 1
 
                     self.board[drop_depth - subtractor][shift + col_index] = True
+
+        # record reward after
+        reward_after:float = self.score_plus()
+
+        # return reward
+        return reward_after - reward_before
     
     def over(self) -> bool:
         """Checks if the game is over, determined by if there is at least a single square in the top row occupied"""
