@@ -99,9 +99,10 @@ while True:
     rewards:float = 0.0
     for exp in experiences:
         rewards = rewards + exp.reward
+    avg_reward = rewards / len(experiences)
 
     # print the progress!
-    status:str = "Model @ " + str(experiences_trained) + " experiences trained over " + str(len(experiences)) + " experiences: " + str(round(sum(rewards) / len(rewards), 1)) + " avg. reward, " + str(round(sum(GameScores) / len(GameScores), 1)) + " avg. score over " + str(len(GameScores)) + " games played."
+    status:str = "Model @ " + str(experiences_trained) + " experiences trained over " + str(len(experiences)) + " experiences: " + str(round(avg_reward, 1)) + " avg. reward, " + str(round(sum(GameScores) / len(GameScores), 1)) + " avg. score over " + str(len(GameScores)) + " games played."
     tools.log(log_file_path, status)
     print(status)
 
