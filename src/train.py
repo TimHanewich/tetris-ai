@@ -6,7 +6,7 @@ import sys
 import tools
 
 ### SETTINGS ###
-model_save_path = r"" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
+model_save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint9.keras" # if you want to start from a checkpoint, fill this in with the path to the .keras file. If wanting to start from a new NN, leave blank!
 log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt" # during training, if you want logs to be saved in this file about the progress of performance improvemnts during training, put a path to a txt file here. Logs will be appended.
 
 # training settings
@@ -14,7 +14,7 @@ gamma:float = 0.5
 epsilon:float = 0.2
 
 # training config
-batch_size:int = 300 # the number of experiences that will be collected before training starts
+batch_size:int = 50 # the number of experiences that will be collected before training starts
 save_model_every_experiences:int = 5000 # how many experiences must be trained before a new model checkpoint is saved
 ################
 
