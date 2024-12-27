@@ -211,8 +211,8 @@ class GameState:
         if drop_depth == 0:
             raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
         
-        # record reward before
-        reward_before:float = self.score_plus()
+        # record density before
+        density_before:float = self.density()
         
         # drop by "copying in the values"
         for row_index in range(0, len(p.squares)):
@@ -228,11 +228,9 @@ class GameState:
 
                     self.board[drop_depth - subtractor][shift + col_index] = True
 
-        # record reward after
-        reward_after:float = self.score_plus()
-
-        # return reward
-        return reward_after - reward_before
+        # record density after, the increase/decrease in density, and return
+        density_after:float = self.density()
+        return density_after - density_before # return the increase/decrease in density as the reward
     
     def over(self) -> bool:
         """Checks if the game is over, determined by if there is at least a single square in the top row occupied"""
@@ -264,15 +262,25 @@ class GameState:
             if col:
                 ToReturn = ToReturn + 1
         return ToReturn
+    
+    def density(self) -> float:
+        """Calculates the density at and below the 'top row' of the current stack, assessing 'how dense' the player has constructed the game board as."""
 
-    def score_plus(self) -> float:
-        """Returns a rough estimate for how successful the game was, considering more than just the score (i.e. also considering density of rows). You can look at this as an alternative way of scoring the game other than just counting the number of occupied squares on the board. This method awards bonuses for row occupation and other stuff."""
+        # calculate column depths
+        cds:list[float] = self.column_depths()
 
-        # start at score
-        ToReturn:float = float(self.score())
+        # calculate density below highest
+        top_row:int = min(cds)
 
-        # add penalty for the column depth having a very high standard deviation
-        depth_std_dev = statistics.pstdev(self.column_depths())
-        ToReturn = ToReturn - (depth_std_dev * 3)
+        # calculate squares occupied at or below the top row
+        SquaresOccupied:int = 0
+        for ri in range(top_row, 20):
+            for square in self.board[ri]:
+                if square:
+                    SquaresOccupied = SquaresOccupied + 1
 
-        return ToReturn
+        # calculate density percentage at or below top row
+        SquaresAtOrBelowTopRow:int = ((20 - top_row) * 10) # the number of squares that are at or below the top row of the stack right now (i.e. "could have" filled in with close to perfect gameplay!)
+        density:float = SquaresOccupied / SquaresAtOrBelowTopRow # the density, as a percentage, of the squares at or below the top row
+
+        return density
