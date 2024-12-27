@@ -307,11 +307,14 @@ class GameState:
                 ToReturn = ToReturn + 3.0
 
         # Penalize for total column depth disparity (supposed to prevent big towers being built)
+        # but penalize more and more the deeper it goes (for every additional step of depth, it costs more than the last step)
         cds:list[int] = self.column_depths()
-        while 0 not in cds:
+        while 0 not in cds: # "flatten" the depths, making them relative to 0
             for i in range(0, len(cds)):
                 cds[i] = cds[i] - 1
-        cds_penalty:float = sum(cds) / len(cds)
-        ToReturn = ToReturn - cds_penalty
+        ColDepDisparityPentaly:float = 0.0
+        for val in cds:
+            ColDepDisparityPentaly = ColDepDisparityPentaly + (val ** 1.25)
+        ToReturn = ToReturn - ColDepDisparityPentaly
 
         return ToReturn
