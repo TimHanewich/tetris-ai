@@ -36,6 +36,7 @@ while True:
 
         # print
         print(str(gs))
+        input("------")
 
     # avg reward
     avg_reward:float = sum(rewards) / len(rewards)
