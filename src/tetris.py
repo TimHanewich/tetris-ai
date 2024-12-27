@@ -271,6 +271,7 @@ class GameState:
 
         # calculate density below highest
         top_row:int = min(cds)
+        if top_row == 20: return 0.0 # if the top row is 20, that means there are no squares occupied on the board yet... it is a new game! So just say density of 0.0!
 
         # calculate squares occupied at or below the top row
         SquaresOccupied:int = 0
