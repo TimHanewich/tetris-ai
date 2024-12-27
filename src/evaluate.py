@@ -2,14 +2,14 @@ import intelligence
 import tetris
 import representation
 
-save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint2.keras"
+save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint0.keras"
 tai = intelligence.TetrisAI(save_path)
 
 while True:
     gs = tetris.GameState()
     while True:
         p = tetris.Piece()
-        p.randomize()
+        p.shape("O")
 
         print("Piece:")
         print(str(p))
