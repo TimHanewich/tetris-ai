@@ -66,6 +66,7 @@ while True:
         else:
             predictions:list[float] = tai.predict(repr_piece, repr_board)
             move = predictions.index(max(predictions)) # select the index with the highest Q-Value (highest expected reward)
+            print("NN played move: " + str(move))
 
         # Execute the move
         IllegalMovePlayed:bool = False
