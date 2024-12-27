@@ -297,26 +297,21 @@ class GameState:
 
         ToReturn:float = 0.0 # start at 0.0
 
-        # calculate densitys, with the lower rows being more important
-        ToReturn = ToReturn + (self.row_density(0) * 1.0)
-        ToReturn = ToReturn + (self.row_density(1) * 1.1)
-        ToReturn = ToReturn + (self.row_density(2) * 1.2)
-        ToReturn = ToReturn + (self.row_density(3) * 1.3)
-        ToReturn = ToReturn + (self.row_density(4) * 1.4)
-        ToReturn = ToReturn + (self.row_density(5) * 1.5)
-        ToReturn = ToReturn + (self.row_density(6) * 1.6)
-        ToReturn = ToReturn + (self.row_density(7) * 1.7)
-        ToReturn = ToReturn + (self.row_density(8) * 1.8)
-        ToReturn = ToReturn + (self.row_density(9) * 1.9)
-        ToReturn = ToReturn + (self.row_density(10) * 2.0)
-        ToReturn = ToReturn + (self.row_density(11) * 2.1)
-        ToReturn = ToReturn + (self.row_density(12) * 2.2)
-        ToReturn = ToReturn + (self.row_density(13) * 2.3)
-        ToReturn = ToReturn + (self.row_density(14) * 2.4)
-        ToReturn = ToReturn + (self.row_density(15) * 2.5)
-        ToReturn = ToReturn + (self.row_density(16) * 2.6)
-        ToReturn = ToReturn + (self.row_density(17) * 2.7)
-        ToReturn = ToReturn + (self.row_density(18) * 2.8)
-        ToReturn = ToReturn + (self.row_density(19) * 2.9)
-        
+        # reward for row density
+        for ri in range(0, len(self.board)):
+            ToReturn = ToReturn + (self.row_density(ri) * 2)
+
+        # bonus reward for full rows
+        for ri in range(0, len(self.board)):
+            if self.row_full(ri):
+                ToReturn = ToReturn + 3.0
+
+        # Penalize for total column depth disparity (supposed to prevent big towers being built)
+        cds:list[int] = self.column_depths()
+        while 0 not in cds:
+            for i in range(0, len(cds)):
+                cds[i] = cds[i] - 1
+        cds_penalty:float = sum(cds) / len(cds)
+        ToReturn = ToReturn - cds_penalty
+
         return ToReturn
