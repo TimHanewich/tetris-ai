@@ -48,7 +48,7 @@ while True:
 
         # generate piece
         p = tetris.Piece()
-        p.randomize()
+        p.shape("O")
 
         # get piece & board representation
         repr_piece:list[int] = representation.PieceState(p)
@@ -81,7 +81,7 @@ while True:
 
         # create a random next piece for the sake of the "next state"
         np:tetris.Piece = tetris.Piece()
-        np.randomize()
+        np.shape("O")
 
         # store this experience
         exp:intelligence.Experience = intelligence.Experience()
