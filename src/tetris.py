@@ -297,15 +297,6 @@ class GameState:
 
         ToReturn:float = 0.0 # start at 0.0
 
-        # reward for row density
-        for ri in range(0, len(self.board)):
-            ToReturn = ToReturn + (self.row_density(ri) * 2)
-
-        # bonus reward for full rows
-        for ri in range(0, len(self.board)):
-            if self.row_full(ri):
-                ToReturn = ToReturn + 3.0
-
         # Penalize for total column depth disparity (supposed to prevent big towers being built)
         # but penalize more and more the deeper it goes (for every additional step of depth, it costs more than the last step)
         cds:list[int] = self.column_depths()
