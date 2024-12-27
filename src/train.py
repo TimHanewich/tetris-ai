@@ -10,7 +10,7 @@ model_save_path = r"" # if you want to start from a checkpoint, fill this in wit
 log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt" # during training, if you want logs to be saved in this file about the progress of performance improvemnts during training, put a path to a txt file here. Logs will be appended.
 
 # training settings
-gamma:float = 0.5
+gamma:float = 0.0
 epsilon:float = 0.2
 
 # training config
