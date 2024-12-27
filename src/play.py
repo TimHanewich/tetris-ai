@@ -5,7 +5,7 @@ while True:
     
     while True:
         p = tetris.Piece()
-        p.randomize()
+        p.shape("O")
         print("Piece:")
         print(str(p))
 
