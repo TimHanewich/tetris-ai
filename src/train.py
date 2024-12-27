@@ -109,6 +109,14 @@ while True:
     tools.log(log_file_path, status)
     print(status)
 
+    # print all moves played previously
+    moves_played:list[int] = []
+    for exp in experiences:
+        if exp.action not in moves_played:
+            moves_played.append(exp.action)
+    moves_played.sort()
+    print("Moves played in last batch: " + str(moves_played))
+
     # train!
     for ei in range(0, len(experiences)):
         exp = experiences[ei]
