@@ -1,7 +1,8 @@
 import intelligence
 import tetris
+import representation
 
-save_path = r""
+save_path = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\checkpoint2.keras"
 tai = intelligence.TetrisAI(save_path)
 
 while True:
@@ -17,8 +18,9 @@ while True:
         print(str(gs))
 
         # get move
-        shift:int = tai.choose_move(p, gs, 0.0)
-        print("Move: " + str(shift))
+        predictions:list[float] = tai.predict(representation.PieceState(p), representation.BoardState(gs))
+        shift:int = predictions.index(max(predictions))
+        print("Move: " + str(shift) + " (predictions: " + str(predictions) + ")")
         input("Enter to execute the move it selected")
 
         # make move
