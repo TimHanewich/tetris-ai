@@ -25,7 +25,8 @@ while True:
 
 
     # execute best move
-    gs.drop(p, best_move)
+    reward:float = gs.drop(p, best_move)
+    print("Reward from move: " + str(round(reward, 2)))
 
     # print
     print(str(gs))
