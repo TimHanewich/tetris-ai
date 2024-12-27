@@ -211,8 +211,8 @@ class GameState:
         if drop_depth == 0:
             raise Exception("Unable to drop piece because there is no more room left to accomodate the piece!")
         
-        # record density before
-        density_before:float = self.density()
+        # record reward before the move
+        reward_before:float = self.score_plus()
         
         # drop by "copying in the values"
         for row_index in range(0, len(p.squares)):
@@ -228,9 +228,11 @@ class GameState:
 
                     self.board[drop_depth - subtractor][shift + col_index] = True
 
-        # record density after, the increase/decrease in density, and return
-        density_after:float = self.density()
-        return density_after - density_before # return the increase/decrease in density as the reward
+        # record reward after
+        reward_after:float = self.score_plus()
+
+        # return the difference
+        return reward_after - reward_before
     
     def over(self) -> bool:
         """Checks if the game is over, determined by if there is at least a single square in the top row occupied"""
@@ -263,6 +265,10 @@ class GameState:
                 ToReturn = ToReturn + 1
         return ToReturn
     
+    def row_density(self, row:int) -> float:
+        """Calculates the density for a particular row"""
+        return self.columns_occupied(row) / len(self.board[row])
+
     def density(self) -> float:
         """Calculates the density at and below the 'top row' of the current stack, assessing 'how dense' the player has constructed the game board as."""
 
@@ -285,3 +291,32 @@ class GameState:
         density:float = SquaresOccupied / SquaresAtOrBelowTopRow # the density, as a percentage, of the squares at or below the top row
 
         return density
+    
+    def score_plus(self) -> float:
+        """Returns a static 'reward' of the current state, an unbiased assessment of the current state. By calculating the difference of this value between the 'after' and 'before' state of a move, can roughly assess a reward"""
+
+        ToReturn:float = 0.0 # start at 0.0
+
+        # calculate densitys, with the lower rows being more important
+        ToReturn = ToReturn + (self.row_density(0) * 1.0)
+        ToReturn = ToReturn + (self.row_density(1) * 1.1)
+        ToReturn = ToReturn + (self.row_density(2) * 1.2)
+        ToReturn = ToReturn + (self.row_density(3) * 1.3)
+        ToReturn = ToReturn + (self.row_density(4) * 1.4)
+        ToReturn = ToReturn + (self.row_density(5) * 1.5)
+        ToReturn = ToReturn + (self.row_density(6) * 1.6)
+        ToReturn = ToReturn + (self.row_density(7) * 1.7)
+        ToReturn = ToReturn + (self.row_density(8) * 1.8)
+        ToReturn = ToReturn + (self.row_density(9) * 1.9)
+        ToReturn = ToReturn + (self.row_density(10) * 2.0)
+        ToReturn = ToReturn + (self.row_density(11) * 2.1)
+        ToReturn = ToReturn + (self.row_density(12) * 2.2)
+        ToReturn = ToReturn + (self.row_density(13) * 2.3)
+        ToReturn = ToReturn + (self.row_density(14) * 2.4)
+        ToReturn = ToReturn + (self.row_density(15) * 2.5)
+        ToReturn = ToReturn + (self.row_density(16) * 2.6)
+        ToReturn = ToReturn + (self.row_density(17) * 2.7)
+        ToReturn = ToReturn + (self.row_density(18) * 2.8)
+        ToReturn = ToReturn + (self.row_density(19) * 2.9)
+        
+        return ToReturn
