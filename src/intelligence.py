@@ -27,14 +27,14 @@ class TetrisAI:
             carry_piece = keras.layers.Dense(32, "relu", name="piece_layer2")(carry_piece)
 
             # build input board portion, followed by some layers
-            input_board = keras.layers.Input(shape=(200,), name="input_board")
-            carry_board = keras.layers.Dense(256, "relu", name="board_layer1")(input_board)
-            carry_board = keras.layers.Dense(256, "relu", name="board_layer2")(carry_board)
+            input_board = keras.layers.Input(shape=(10,), name="input_board")
+            carry_board = keras.layers.Dense(40, "relu", name="board_layer1")(input_board)
+            carry_board = keras.layers.Dense(40, "relu", name="board_layer2")(carry_board)
 
             # combine the two into one layer, followed by some layers
             combined = keras.layers.concatenate([carry_piece, carry_board], name="combined")
-            carry = keras.layers.Dense(512, "relu", name="combined_layer1")(combined)
-            carry = keras.layers.Dense(256, "relu", name="combined_layer2")(carry)
+            carry = keras.layers.Dense(128, "relu", name="combined_layer1")(combined)
+            carry = keras.layers.Dense(64, "relu", name="combined_layer2")(carry)
             output = keras.layers.Dense(9, "linear", name="output")(carry) # output of 9 potential moves (shift of 0 to shift of 9)
 
             # construct the model
