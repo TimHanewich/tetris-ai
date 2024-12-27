@@ -15,7 +15,7 @@ while True:
         i:str = input("How many shifts? > ")
         shifts:int = int(i)
         reward:float = gs.drop(p, shifts)
-        print("Reward from move '" + str(reward) + "'")
+        print("Reward from move '" + str(round(reward, 1)) + "'")
 
         # if game over
         if gs.over():
