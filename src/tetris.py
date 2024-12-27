@@ -232,7 +232,9 @@ class GameState:
         reward_after:float = self.score_plus()
 
         # return the difference
-        return reward_after - reward_before
+        reward:float = reward_after - reward_before
+        reward = max(reward, 0.0) # do not let reward go below 0
+        return reward
     
     def over(self) -> bool:
         """Checks if the game is over, determined by if there is at least a single square in the top row occupied"""
