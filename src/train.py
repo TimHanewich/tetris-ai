@@ -14,7 +14,7 @@ gamma:float = 0.0
 epsilon:float = 0.8
 
 # training config
-batch_size:int = 50 # the number of experiences that will be collected before training starts
+batch_size:int = 300 # the number of experiences that will be collected before training starts
 save_model_every_experiences:int = 5000 # how many experiences must be trained before a new model checkpoint is saved
 ################
 
