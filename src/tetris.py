@@ -159,6 +159,13 @@ class GameState:
         ToReturn = ToReturn + "\n" + "   0123456789"
         return ToReturn
     
+    def randomize(self, max_height:int = 10) -> None:
+        """Sets the board to a random state."""
+        for ci in range(0, 10): # for each column of the board
+            rdepth:int = random.randint(0, max_height)
+            for ri in range(20-rdepth, 20):
+                self.board[ri][ci] = True
+
     def column_depths(self) -> list[int]:
         """Calculates how 'deep' the available space on each column (10 columns) goes, from the top down."""
 
