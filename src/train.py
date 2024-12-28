@@ -10,7 +10,7 @@ model_save_path = r"" # if you want to start from a checkpoint, fill this in wit
 log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt" # during training, if you want logs to be saved in this file about the progress of performance improvemnts during training, put a path to a txt file here. Logs will be appended.
 
 # training settings
-gamma:float = 0.0 # prioritizes between current (immediate, in this next step) rewards and future rewards... 0.0 = full prioritization on current rewards, 1.0 = future values just as important as immediate, and > 1.0 means future rewards mean even more
+gamma:float = 0.33 # prioritizes between current (immediate, in this next step) rewards and future rewards... 0.0 = full prioritization on current rewards, 1.0 = future values just as important as immediate, and > 1.0 means future rewards mean even more
 epsilon:float = 0.8 # the epsilon starting point
 epsilon_decay:float = 0.01 # how much epsilon should decrease between batches
 epsilon_min:float = 0.05 # the minimum (floor) epsilon value it will never decay below
