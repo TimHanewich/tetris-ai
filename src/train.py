@@ -33,7 +33,7 @@ else:
 # variables to track
 experiences_trained:int = 0 # the number of experiences the model has been trained at at any given point
 model_last_saved_at_experiences_trained:int = 0 # the last number of experiences the model was trained on when the last checkpoint was saved
-on_checkpoint:int = 0
+on_checkpoint:int = 1 # for tracking checkpoint saves. Start on #1 so that way we can just multiply the number by the "save_model_every_exierneces" variable to determine how many experiences it was trained on.
 
 # training loop!
 while True:
