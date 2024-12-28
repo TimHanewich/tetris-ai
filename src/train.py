@@ -11,7 +11,9 @@ log_file_path:str = r"C:\Users\timh\Downloads\tah\tetris-ai\checkpoints\log.txt"
 
 # training settings
 gamma:float = 0.0
-epsilon:float = 0.8
+epsilon:float = 0.8 # the epsilon starting point
+epsilon_decay:float = 0.01 # how much epsilon should decrease between batches
+epsilon_min:float = 0.05 # the minimum (floor) epsilon value it will never decay below
 
 # training config
 batch_size:int = 300 # the number of experiences that will be collected before training starts
@@ -144,6 +146,10 @@ while True:
         tai.train(exp.state[0], exp.state[1], qvalues)
         experiences_trained = experiences_trained + 1
     print("training complete!")
+
+    # decay epsilon
+    epsilon = epsilon - epsilon_decay # decrease by decay
+    epsilon = max(epsilon, epsilon_min) # do not ever go below the minimum!
 
     # save model checkpoint
     if (experiences_trained - model_last_saved_at_experiences_trained) >= save_model_every_experiences:
