@@ -24,6 +24,7 @@
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/11/checkpoint11.keras)|`9d8de0a653c3855964db9befcec98ab48ab25559`|New reward system. Trained on ~1700 games. Average score ~125. Log file [here](https://github.com/TimHanewich/tetris-ai/releases/download/11/log.txt)|
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/12/checkpoint5.keras)|`884a9235578f78a707e7b9775714f4fc5898aa37`|Trained on 25,000 games on playing just shape "O" as a test, with decaying gradient. Gamma set to 0.0. Log file [here](https://github.com/TimHanewich/tetris-ai/releases/download/12/log.txt).|
 |[download](https://github.com/TimHanewich/tetris-ai/releases/download/13/checkpoint33.keras)|``|Trained overnight on 165,000 experiences. Only plays shape "O". Gamma raised to 0.33 from 0.0 in checkpoint before this. Training log file [here](https://github.com/TimHanewich/tetris-ai/releases/download/13/log.txt).|
+|[download](https://github.com/TimHanewich/tetris-ai/releases/download/14/checkpoint80.keras)|`3b74aab421b9f9afa774a11d7fd8f17cbd0341f8`|Trained on 400,000 games overnight. Does not play too well, but does play different moves, at least somewhat of a strategy. Training log file [here](https://github.com/TimHanewich/tetris-ai/releases/download/14/log.txt).|
 
 ## Notable Commits
 - `d5ca7955af27c2f5c2cd2bb663db6b33981a892f` - last commit before moving from a 4x8 to a 10x20 board and 2x2 to 4x2 pieces (WxH in all of those).
