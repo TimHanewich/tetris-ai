@@ -2,7 +2,7 @@ import intelligence
 import tetris
 import representation
 
-save_path = r"C:\Users\timh\Downloads\checkpoint33.keras"
+save_path = r""
 tai = intelligence.TetrisAI(save_path)
 
 while True:
@@ -10,7 +10,7 @@ while True:
     gs.randomize(5)
     while True:
         p = tetris.Piece()
-        p.shape("O")
+        p.randomize()
 
         print("Piece:")
         print(str(p))
